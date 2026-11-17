@@ -1,0 +1,2575 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>আমার একাডেমি | পূর্ণাঙ্গ ই-লার্নিং প্ল্যাটফর্ম</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Hind Siliguri', 'Noto Sans Bengali', 'Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts: Hind Siliguri & Noto Sans Bengali -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Hind Siliguri', 'Noto Sans Bengali', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #64748b; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200">
+
+    <!-- ==================== TOP ROLE SWITCHER BAR ==================== -->
+    <div class="bg-slate-950 text-white px-3 py-2 text-xs flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 sticky top-0 z-50">
+        <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-slate-400 hidden sm:inline">সিস্টেম ভিউ:</span>
+            <span id="top-role-badge" class="font-bold text-amber-400">স্টুডেন্ট ভিউ</span>
+        </div>
+        <div class="flex items-center gap-1.5 bg-slate-900 p-1 rounded-xl border border-slate-800">
+            <button onclick="switchSystemView('student')" id="btn-view-student" class="px-3 py-1 rounded-lg font-bold bg-indigo-600 text-white shadow transition">
+                <i class="fa-solid fa-user-graduate mr-1"></i>স্টুডেন্ট
+            </button>
+            <button onclick="switchSystemView('admin')" id="btn-view-admin" class="px-3 py-1 rounded-lg font-bold text-slate-300 hover:text-white transition">
+                <i class="fa-solid fa-shield-halved mr-1"></i>অ্যাডমিন / মডারেটর
+            </button>
+        </div>
+    </div>
+
+    <!-- ==================== 1. AUTHENTICATION & 2-STEP ONBOARDING ==================== -->
+    <div id="auth-onboarding-wrapper" class="hidden flex-1 flex items-center justify-center p-4 bg-gradient-to-br from-indigo-950 via-slate-900 to-slate-950 min-h-[calc(100vh-44px)]">
+        <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+            
+            <!-- STEP 0: LOGIN / REGISTER -->
+            <div id="auth-step-login" class="p-6 sm:p-8 space-y-5">
+                <div class="text-center">
+                    <div class="w-16 h-16 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-3xl mx-auto shadow-lg shadow-indigo-600/30 mb-3">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white">আমার একাডেমি</h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">মোবাইল নম্বর অথবা Gmail দিয়ে আপনার অ্যাকাউন্টে প্রবেশ করুন</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
+                    <button type="button" onclick="setAuthMode('register')" id="auth-tab-register" class="py-2 rounded-lg text-xs font-bold bg-indigo-600 text-white shadow transition">
+                        নতুন অ্যাকাউন্ট (Sign Up)
+                    </button>
+                    <button type="button" onclick="setAuthMode('login')" id="auth-tab-login" class="py-2 rounded-lg text-xs font-bold text-slate-600 dark:text-slate-300 transition">
+                        লগইন (Log In)
+                    </button>
+                </div>
+
+                <form onsubmit="handleAuthSubmit(event)" class="space-y-3.5">
+                    <div id="auth-fullname-field">
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">শিক্ষার্থীর পূর্ণ নাম</label>
+                        <input type="text" id="auth-name-input" placeholder="যেমন: তানভীর আহমেদ" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm outline-none focus:border-indigo-600">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">মোবাইল নম্বর অথবা Gmail</label>
+                        <input type="text" id="auth-identifier-input" required placeholder="017XXXXXXXX অথবা example@gmail.com" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm outline-none focus:border-indigo-600">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">পাসওয়ার্ড</label>
+                        <input type="password" id="auth-password-input" required placeholder="••••••••" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm outline-none focus:border-indigo-600">
+                    </div>
+                    <button type="submit" id="auth-submit-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-indigo-600/25 transition">
+                        পরবর্তী ধাপে যান →
+                    </button>
+                </form>
+
+                <button type="button" onclick="quickDemoLogin()" class="w-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold py-2.5 rounded-xl text-xs border border-slate-200 dark:border-slate-700 transition">
+                    <i class="fa-solid fa-bolt text-amber-500 mr-1"></i> ডেমো স্টুডেন্ট অ্যাকাউন্ট দিয়ে সরাসরি প্রবেশ করুন
+                </button>
+            </div>
+
+            <!-- STEP 1: PROFILE PICTURE UPLOAD OR SKIP -->
+            <div id="auth-step-avatar" class="hidden p-6 sm:p-8 space-y-5 text-center">
+                <div class="flex items-center justify-between text-xs font-bold text-indigo-600 dark:text-indigo-400">
+                    <span>ধাপ ১ / ২</span>
+                    <button type="button" onclick="skipAvatarStep()" class="text-slate-500 hover:text-indigo-600 underline">স্কিপ করুন (Skip) →</button>
+                </div>
+
+                <div>
+                    <h2 class="text-xl font-bold">প্রোফাইল পিকচার যুক্ত করুন</h2>
+                    <p class="text-xs text-slate-500 mt-1">আপনার পছন্দের ছবি সিলেক্ট করুন অথবা চাইলে স্কিপ করতে পারেন</p>
+                </div>
+
+                <div class="relative w-28 h-28 mx-auto">
+                    <img id="onboarding-avatar-preview" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Student1" alt="Avatar" class="w-28 h-28 rounded-full object-cover border-4 border-indigo-600 shadow-lg bg-slate-100">
+                    <label for="avatar-file-picker" class="absolute bottom-0 right-0 w-9 h-9 rounded-full bg-indigo-600 text-white flex items-center justify-center cursor-pointer shadow-md hover:bg-indigo-700 transition">
+                        <i class="fa-solid fa-camera text-sm"></i>
+                    </label>
+                    <input type="file" id="avatar-file-picker" accept="image/*" onchange="handleLocalAvatarFile(event)" class="hidden">
+                </div>
+
+                <div class="flex justify-center gap-2.5">
+                    <img onclick="selectPresetAvatar('https://api.dicebear.com/7.x/avataaars/svg?seed=Student1')" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Student1" class="w-11 h-11 rounded-full border-2 border-slate-200 hover:border-indigo-600 cursor-pointer bg-slate-50">
+                    <img onclick="selectPresetAvatar('https://api.dicebear.com/7.x/avataaars/svg?seed=Ayesha')" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Ayesha" class="w-11 h-11 rounded-full border-2 border-slate-200 hover:border-indigo-600 cursor-pointer bg-slate-50">
+                    <img onclick="selectPresetAvatar('https://api.dicebear.com/7.x/avataaars/svg?seed=Rafiq')" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Rafiq" class="w-11 h-11 rounded-full border-2 border-slate-200 hover:border-indigo-600 cursor-pointer bg-slate-50">
+                    <img onclick="selectPresetAvatar('https://api.dicebear.com/7.x/avataaars/svg?seed=Nusrat')" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Nusrat" class="w-11 h-11 rounded-full border-2 border-slate-200 hover:border-indigo-600 cursor-pointer bg-slate-50">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 pt-2">
+                    <button type="button" onclick="skipAvatarStep()" class="py-2.5 rounded-xl font-bold text-sm bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                        স্কিপ করুন
+                    </button>
+                    <button type="button" onclick="confirmAvatarStep()" class="py-2.5 rounded-xl font-bold text-sm bg-indigo-600 hover:bg-indigo-700 text-white shadow-md">
+                        সেভ ও পরবর্তী →
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 2: ACADEMIC & LOCATION DETAILS -->
+            <div id="auth-step-details" class="hidden p-6 sm:p-8 space-y-4">
+                <div class="flex items-center justify-between text-xs font-bold text-indigo-600 dark:text-indigo-400">
+                    <span>ধাপ ২ / ২</span>
+                    <span>প্রোফাইল তথ্য</span>
+                </div>
+
+                <div>
+                    <h2 class="text-xl font-bold">আপনার ব্যক্তিগত ও শিক্ষাপ্রতিষ্ঠানের তথ্য</h2>
+                    <p class="text-xs text-slate-500 mt-0.5">এই তথ্যগুলো আপনার স্টুডেন্ট অ্যাকাউন্টে সুরক্ষিত থাকবে</p>
+                </div>
+
+                <form onsubmit="completeStudentOnboarding(event)" class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-bold mb-1">জন্ম তারিখ (Date of Birth)</label>
+                        <input type="date" id="onboard-dob" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm outline-none">
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold mb-1">জেলা (District)</label>
+                            <input type="text" id="onboard-district" required placeholder="যেমন: ঢাকা" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold mb-1">উপজেলা (Upazila)</label>
+                            <input type="text" id="onboard-upazila" required placeholder="যেমন: সাভার" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm outline-none">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold mb-1">স্কুলের নাম (School Name)</label>
+                        <input type="text" id="onboard-school" required placeholder="যেমন: ঢাকা রেসিডেনসিয়াল মডেল কলেজ" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm outline-none">
+                    </div>
+                    <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl shadow-lg transition mt-2">
+                        অ্যাকাউন্ট সম্পন্ন করুন ও ক্লাস শুরু করুন
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 2. STUDENT DASHBOARD VIEW ==================== -->
+    <div id="student-dashboard-wrapper" class="flex-1 flex flex-col max-w-2xl w-full mx-auto bg-white dark:bg-slate-900 shadow-2xl min-h-screen relative border-x border-slate-200/70 dark:border-slate-800">
+        
+        <!-- Sticky Deep Indigo Header & 5-Icon Navigation Bar -->
+        <header class="bg-gradient-to-r from-indigo-900 via-indigo-800 to-slate-900 text-white sticky top-[44px] z-40 shadow-lg">
+            <div class="px-4 pt-3 pb-2 flex items-center justify-between">
+                <div onclick="switchStudentTab('home')" class="flex items-center gap-2.5 cursor-pointer">
+                    <div class="w-9 h-9 rounded-xl bg-white/15 backdrop-blur flex items-center justify-center text-amber-300 text-lg">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <div>
+                        <span class="font-bold text-lg tracking-wide block leading-none">আমার একাডেমি</span>
+                        <span class="text-[10px] text-indigo-200 font-medium">স্মার্ট অনলাইন লার্নিং</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <button onclick="openSearchOverlay()" aria-label="Search" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition">
+                        <i class="fa-solid fa-magnifying-glass text-base text-white"></i>
+                    </button>
+                    <button onclick="switchStudentTab('menu')" aria-label="Menu" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition">
+                        <i class="fa-solid fa-bars text-lg text-white"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 5-Icon Navigation Bar -->
+            <nav class="grid grid-cols-5 items-center py-2 px-1.5 border-t border-white/10 bg-black/15">
+                <button onclick="switchStudentTab('home')" class="flex flex-col items-center justify-center py-1 rounded-xl transition">
+                    <div class="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-0.5">
+                        <i class="fa-solid fa-house text-base"></i>
+                    </div>
+                    <span class="text-[11px] font-bold text-white">হোম</span>
+                    <span id="tab-bar-home" class="w-6 h-1 bg-amber-400 rounded-full mt-0.5"></span>
+                </button>
+
+                <button onclick="switchStudentTab('videos')" class="flex flex-col items-center justify-center py-1 rounded-xl transition">
+                    <div class="w-9 h-9 rounded-xl bg-sky-500/20 text-sky-300 flex items-center justify-center mb-0.5">
+                        <i class="fa-solid fa-circle-play text-base"></i>
+                    </div>
+                    <span class="text-[11px] font-bold text-white">ভিডিও</span>
+                    <span id="tab-bar-videos" class="hidden w-6 h-1 bg-amber-400 rounded-full mt-0.5"></span>
+                </button>
+
+                <button onclick="switchStudentTab('mycourse')" class="flex flex-col items-center justify-center py-1 rounded-xl transition">
+                    <div class="w-9 h-9 rounded-xl bg-indigo-400/25 text-indigo-200 flex items-center justify-center mb-0.5">
+                        <i class="fa-solid fa-chalkboard-user text-base"></i>
+                    </div>
+                    <span class="text-[11px] font-bold text-white">মাই কোর্স</span>
+                    <span id="tab-bar-mycourse" class="hidden w-6 h-1 bg-amber-400 rounded-full mt-0.5"></span>
+                </button>
+
+                <button onclick="switchStudentTab('pdf')" class="flex flex-col items-center justify-center py-1 rounded-xl transition">
+                    <div class="w-9 h-9 rounded-xl bg-amber-400/20 text-amber-300 flex items-center justify-center mb-0.5">
+                        <i class="fa-solid fa-file-pdf text-base"></i>
+                    </div>
+                    <span class="text-[11px] font-bold text-white">পিডিএফ</span>
+                    <span id="tab-bar-pdf" class="hidden w-6 h-1 bg-amber-400 rounded-full mt-0.5"></span>
+                </button>
+
+                <button onclick="switchStudentTab('notifications')" class="flex flex-col items-center justify-center py-1 rounded-xl transition">
+                    <div class="w-9 h-9 rounded-xl bg-rose-500/20 text-amber-300 flex items-center justify-center mb-0.5 relative">
+                        <i class="fa-solid fa-bell text-base"></i>
+                        <span id="header-notif-badge" class="hidden absolute -top-1 -right-1 bg-rose-600 text-white text-[10px] font-extrabold min-w-[17px] h-[17px] px-1 rounded-full flex items-center justify-center shadow">0</span>
+                    </div>
+                    <span class="text-[11px] font-bold text-white">নোটিফিকেশন</span>
+                    <span id="tab-bar-notifications" class="hidden w-6 h-1 bg-amber-400 rounded-full mt-0.5"></span>
+                </button>
+            </nav>
+        </header>
+
+        <!-- ==================== SEARCH OVERLAY ==================== -->
+        <div id="search-overlay" class="hidden fixed inset-0 z-50 bg-slate-50 dark:bg-slate-950 flex flex-col max-w-2xl mx-auto">
+            <div class="bg-slate-900 px-3 py-3 flex items-center gap-2 shadow-md">
+                <button onclick="closeSearchOverlay()" class="w-9 h-9 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <div class="flex-1 bg-slate-800 border border-slate-700 rounded-full px-4 py-2 flex items-center">
+                    <i class="fa-solid fa-magnifying-glass text-slate-400 text-xs mr-2.5"></i>
+                    <input type="text" id="search-query-input" oninput="executeSearch()" placeholder="কোর্স, ভিডিও বা PDF লিখে সার্চ করুন..." class="bg-transparent text-white placeholder-slate-400 w-full outline-none text-sm">
+                    <button onclick="clearSearchQuery()" id="search-clear-btn" class="hidden text-slate-400 hover:text-white ml-2">
+                        <i class="fa-solid fa-circle-xmark"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2.5 px-3 py-2.5 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm">
+                <button onclick="setSearchTab('videos')" id="search-tab-videos" class="py-2 rounded-full font-bold text-xs sm:text-sm bg-indigo-600 text-white shadow transition">
+                    Videos
+                </button>
+                <button onclick="setSearchTab('pdf')" id="search-tab-pdf" class="py-2 rounded-full font-bold text-xs sm:text-sm bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition">
+                    pdf
+                </button>
+                <button onclick="setSearchTab('live')" id="search-tab-live" class="py-2 rounded-full font-bold text-xs sm:text-sm bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition">
+                    Live
+                </button>
+            </div>
+
+            <div id="search-results-list" class="flex-1 overflow-y-auto p-3.5 space-y-4"></div>
+        </div>
+
+        <!-- ==================== STUDENT CONTENT SECTIONS ==================== -->
+        <main class="flex-1 pb-12">
+
+            <!-- 1. HOME TAB -->
+            <section id="student-sec-home" class="p-3.5 space-y-4">
+                <!-- Dynamic Live Banner (Public Live OR Course-Specific Live for enrolled students) -->
+                <div id="home-live-banner-slot" class="space-y-2.5"></div>
+                <!-- Curated Feed (Videos, PDFs, Courses + Device-Stored Image/Video Ad after 3rd video) -->
+                <div id="home-feed-list" class="space-y-4"></div>
+            </section>
+
+            <!-- 2. FREE VIDEOS TAB -->
+            <section id="student-sec-videos" class="hidden p-3.5 space-y-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="font-bold text-base text-slate-900 dark:text-white">সকল ফ্রি ভিডিও ক্লাস</h2>
+                        <p class="text-xs text-slate-500">যেকোনো ভিডিওতে ক্লিক করে ক্লাস করুন ও ডাউনলোড করুন</p>
+                    </div>
+                    <span class="text-[11px] font-bold bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 px-2.5 py-1 rounded-full">১০০% ফ্রি</span>
+                </div>
+                <div id="free-videos-list" class="space-y-4"></div>
+            </section>
+
+            <!-- 3. MY COURSE TAB (Purchased Courses + Course Classroom + Unpurchased Courses) -->
+            <section id="student-sec-mycourse" class="hidden p-3.5 space-y-6">
+                
+                <!-- Overview List -->
+                <div id="mycourse-list-view" class="space-y-6">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <h2 class="font-bold text-base text-indigo-700 dark:text-indigo-400 flex items-center gap-2">
+                                <i class="fa-solid fa-circle-check text-emerald-500"></i> আমার ক্রয়কৃত কোর্সসমূহ
+                            </h2>
+                            <span class="text-[11px] text-slate-500">ক্লিক করে ক্লাসরুমে প্রবেশ করুন</span>
+                        </div>
+                        <div id="my-purchased-courses-list" class="space-y-4"></div>
+                    </div>
+
+                    <div class="pt-4 border-t border-slate-200 dark:border-slate-800">
+                        <div class="mb-3">
+                            <h2 class="font-bold text-base text-slate-900 dark:text-white">নতুন কোর্সসমূহ (ক্রয় করুন)</h2>
+                            <p class="text-xs text-slate-500">Pay বাটনে চাপ দিয়ে বিকাশ, নগদ বা রকেটের মাধ্যমে সাথে সাথে ভর্তি হন</p>
+                        </div>
+                        <div id="unpurchased-courses-list" class="space-y-4"></div>
+                    </div>
+                </div>
+
+                <!-- Inside Purchased Course Classroom (Live Class Join + Protected Recorded Classes) -->
+                <div id="course-classroom-view" class="hidden space-y-4">
+                    <button onclick="exitCourseClassroom()" class="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 px-3 py-1.5 rounded-xl">
+                        <i class="fa-solid fa-arrow-left"></i> মাই কোর্সে ফিরে যান
+                    </button>
+
+                    <div class="bg-gradient-to-r from-indigo-900 to-slate-900 text-white p-5 rounded-2xl shadow-lg space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span id="cls-room-validity" class="text-[11px] font-bold bg-emerald-500 text-slate-950 px-2.5 py-0.5 rounded-full">মেয়াদ বাকি: ৩০ দিন</span>
+                            <span class="text-[11px] text-indigo-200"><i class="fa-solid fa-lock mr-1"></i>সুরক্ষিত কোর্স ক্লাসরুম</span>
+                        </div>
+                        <h3 id="cls-room-title" class="text-lg sm:text-xl font-bold pt-1">কোর্সের নাম</h3>
+                    </div>
+
+                    <!-- Live Class Banner inside Course Classroom -->
+                    <div id="cls-room-live-box"></div>
+
+                    <!-- Protected Recorded Classes for This Course Only -->
+                    <div class="space-y-3 pt-2">
+                        <div class="flex items-center justify-between">
+                            <h4 class="font-bold text-sm sm:text-base flex items-center gap-2">
+                                <i class="fa-solid fa-film text-indigo-600"></i> এই কোর্সের রেকর্ডেড ক্লাসসমূহ
+                            </h4>
+                            <span class="text-[11px] text-slate-500">শুধুমাত্র কোর্স শিক্ষার্থীদের জন্য</span>
+                        </div>
+                        <div id="cls-room-recorded-list" class="space-y-3"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. PDF NOTES TAB -->
+            <section id="student-sec-pdf" class="hidden p-3.5 space-y-3.5">
+                <div>
+                    <h2 class="font-bold text-base text-slate-900 dark:text-white">সকল পিডিএফ (PDF) লেকচার শিট</h2>
+                    <p class="text-xs text-slate-500">ফ্রি পিডিএফ সরাসরি ডাউনলোড করুন এবং পেইড পিডিএফ আনলক করুন</p>
+                </div>
+                <div id="all-pdfs-list" class="space-y-3"></div>
+            </section>
+
+            <!-- 5. NOTIFICATIONS TAB -->
+            <section id="student-sec-notifications" class="hidden p-3.5 space-y-3.5">
+                <div class="flex items-center justify-between">
+                    <h2 class="font-bold text-base text-slate-900 dark:text-white">নোটিফিকেশন ও ক্লাস রুটিন</h2>
+                    <button onclick="markAllNotificationsAsRead()" class="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline">
+                        সব পঠিত করুন
+                    </button>
+                </div>
+                <div id="student-notifications-list" class="space-y-3"></div>
+            </section>
+
+            <!-- 6. THREE-LINE MENU VIEW -->
+            <section id="student-sec-menu" class="hidden p-3.5 space-y-3.5">
+                <div id="menu-overview-cards" class="space-y-3">
+                    <!-- Account Card -->
+                    <div onclick="openMenuSubView('account')" class="bg-gradient-to-r from-indigo-900 to-slate-800 text-white p-5 rounded-2xl shadow-md flex items-center gap-4 cursor-pointer hover:brightness-105 transition">
+                        <img id="menu-card-avatar" src="" alt="Profile" class="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-2 border-amber-400 bg-white shrink-0">
+                        <div class="flex-1 min-w-0">
+                            <span class="text-[10px] uppercase font-bold tracking-wider bg-white/15 px-2 py-0.5 rounded text-amber-300">স্টুডেন্ট প্রোফাইল</span>
+                            <h3 id="menu-card-name" class="text-xl font-bold mt-1 truncate">শিক্ষার্থীর নাম</h3>
+                            <p id="menu-card-contact" class="text-xs text-slate-300 truncate">017XXXXXXXX</p>
+                            <p class="text-[11px] text-indigo-200 mt-1.5 font-semibold">সম্পূর্ণ তথ্য ও যুক্ত কোর্স দেখুন →</p>
+                        </div>
+                    </div>
+
+                    <!-- Downloaded Card -->
+                    <div onclick="openMenuSubView('downloaded')" class="bg-white dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 p-5 rounded-2xl shadow-sm flex items-center justify-between cursor-pointer hover:border-indigo-500 transition">
+                        <div class="flex items-center gap-3.5">
+                            <div class="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-download"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold">Downloaded</h3>
+                                <p class="text-xs text-slate-500">ডাউনলোড করা ভিডিওসমূহ (<span id="menu-downloaded-count">0</span>টি)</p>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-slate-400"></i>
+                    </div>
+
+                    <!-- Settings Card -->
+                    <div onclick="openMenuSubView('settings')" class="bg-white dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 p-5 rounded-2xl shadow-sm flex items-center justify-between cursor-pointer hover:border-indigo-500 transition">
+                        <div class="flex items-center gap-3.5">
+                            <div class="w-12 h-12 rounded-xl bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-gear"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold">Settings</h3>
+                                <p class="text-xs text-slate-500">পাসওয়ার্ড পরিবর্তন, ডার্ক মোড ও অন্যান্য সেটিংস</p>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-slate-400"></i>
+                    </div>
+
+                    <button onclick="logoutStudentAccount()" class="w-full py-3 rounded-2xl border border-rose-200 dark:border-rose-900/50 text-rose-600 dark:text-rose-400 font-bold text-sm hover:bg-rose-50 dark:hover:bg-rose-950/30 transition">
+                        <i class="fa-solid fa-right-from-bracket mr-1.5"></i> লগআউট / নতুন অ্যাকাউন্ট খুলুন
+                    </button>
+                </div>
+
+                <!-- Sub-View 1: Full Account Details -->
+                <div id="menu-sub-account" class="hidden space-y-4">
+                    <button onclick="returnToMenuOverview()" class="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 dark:text-indigo-400">
+                        <i class="fa-solid fa-arrow-left"></i> মেনুতে ফিরে যান
+                    </button>
+
+                    <div class="bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 text-center space-y-2">
+                        <img id="acc-detail-avatar" src="" class="w-24 h-24 rounded-full object-cover mx-auto border-4 border-indigo-600 shadow bg-white">
+                        <h3 id="acc-detail-name" class="text-xl font-bold pt-1">নাম</h3>
+                        <p id="acc-detail-contact" class="text-xs text-slate-500 font-medium">মোবাইল / জিমেইল</p>
+                        
+                        <div class="grid grid-cols-2 gap-2.5 text-left pt-4 border-t border-slate-100 dark:border-slate-700 text-xs">
+                            <div class="bg-slate-50 dark:bg-slate-900 p-3 rounded-xl">
+                                <span class="text-slate-400 block text-[10px]">জন্ম তারিখ</span>
+                                <strong id="acc-detail-dob">-</strong>
+                            </div>
+                            <div class="bg-slate-50 dark:bg-slate-900 p-3 rounded-xl">
+                                <span class="text-slate-400 block text-[10px]">জেলা</span>
+                                <strong id="acc-detail-district">-</strong>
+                            </div>
+                            <div class="bg-slate-50 dark:bg-slate-900 p-3 rounded-xl">
+                                <span class="text-slate-400 block text-[10px]">উপজেলা</span>
+                                <strong id="acc-detail-upazila">-</strong>
+                            </div>
+                            <div class="bg-slate-50 dark:bg-slate-900 p-3 rounded-xl">
+                                <span class="text-slate-400 block text-[10px]">স্কুলের নাম</span>
+                                <strong id="acc-detail-school" class="truncate block">-</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 space-y-2.5">
+                        <h4 class="font-bold text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-graduation-cap text-indigo-600"></i> যুক্ত থাকা কোর্সসমূহ:
+                        </h4>
+                        <div id="acc-enrolled-courses-list" class="space-y-2"></div>
+                    </div>
+                </div>
+
+                <!-- Sub-View 2: Downloaded Videos -->
+                <div id="menu-sub-downloaded" class="hidden space-y-4">
+                    <button onclick="returnToMenuOverview()" class="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 dark:text-indigo-400">
+                        <i class="fa-solid fa-arrow-left"></i> মেনুতে ফিরে যান
+                    </button>
+                    <div>
+                        <h3 class="text-lg font-bold">ডাউনলোড করা ভিডিওসমূহ</h3>
+                        <p class="text-xs text-slate-500">আপনার ডাউনলোড করা সকল ফ্রি ক্লাস এখানে জমা আছে</p>
+                    </div>
+                    <div id="downloaded-videos-container" class="space-y-3"></div>
+                </div>
+
+                <!-- Sub-View 3: Settings -->
+                <div id="menu-sub-settings" class="hidden space-y-4">
+                    <button onclick="returnToMenuOverview()" class="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 dark:text-indigo-400">
+                        <i class="fa-solid fa-arrow-left"></i> মেনুতে ফিরে যান
+                    </button>
+
+                    <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-2xl flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-slate-900 text-amber-400 flex items-center justify-center">
+                                <i class="fa-solid fa-moon"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-sm">ডার্ক মোড (Dark Mode)</h4>
+                                <p class="text-xs text-slate-500">রাতের বেলা পড়ার জন্য ডার্ক থিম চালু করুন</p>
+                            </div>
+                        </div>
+                        <button onclick="toggleAppDarkMode()" class="w-14 h-7 rounded-full bg-slate-300 dark:bg-indigo-600 p-1 transition flex items-center">
+                            <span class="w-5 h-5 rounded-full bg-white shadow transform transition dark:translate-x-7"></span>
+                        </button>
+                    </div>
+
+                    <form onsubmit="handlePasswordUpdate(event)" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-2xl space-y-3">
+                        <h4 class="font-bold text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-lock text-amber-500"></i> পাসওয়ার্ড পরিবর্তন করুন
+                        </h4>
+                        <div>
+                            <label class="block text-xs text-slate-500 mb-1">বর্তমান পাসওয়ার্ড</label>
+                            <input type="password" id="set-old-pass" required placeholder="••••••" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-500 mb-1">নতুন পাসওয়ার্ড</label>
+                            <input type="password" id="set-new-pass" required placeholder="নতুন পাসওয়ার্ড লিখুন" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm outline-none">
+                        </div>
+                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl text-sm transition">
+                            পাসওয়ার্ড সেভ করুন
+                        </button>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- ==================== 3. ADMIN & 4-MODERATOR CONTROL PANEL ==================== -->
+    <div id="admin-panel-wrapper" class="hidden flex-1 max-w-5xl w-full mx-auto px-3.5 py-6 space-y-6">
+        
+        <!-- Admin Top Banner & Device Storage Status -->
+        <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-5 rounded-3xl shadow-xl border border-indigo-500/20 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+                <div class="flex flex-wrap items-center gap-2">
+                    <span class="text-[11px] font-bold bg-amber-400 text-slate-950 px-3 py-0.5 rounded-full">অ্যাডমিন ও মডারেটর ড্যাশবোর্ড</span>
+                    <span id="active-storage-badge" class="text-[11px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2.5 py-0.5 rounded-full">
+                        <i class="fa-solid fa-mobile-screen mr-1"></i>মোবাইল স্টোরেজ সক্রিয়
+                    </span>
+                </div>
+                <h2 class="text-2xl font-bold mt-1.5">আমার একাডেমি কন্ট্রোল সেন্টার</h2>
+                <p class="text-xs text-slate-300 mt-0.5">ডিভাইস স্টোরেজ থেকে ছবি/ভিডিও Ad, পাবলিক ও প্রাইভেট লাইভ ক্লাস, কোর্সভিত্তিক রেকর্ডেড ক্লাস ও মডারেটর নিয়ন্ত্রণ করুন</p>
+            </div>
+            <div class="bg-white/10 p-3 rounded-2xl border border-white/15 min-w-[220px]">
+                <label class="block text-[10px] font-bold text-amber-300 uppercase mb-1">বর্তমান অপারেটর (Role):</label>
+                <select id="admin-active-operator" onchange="changeActiveAdminOperator()" class="w-full bg-slate-900 text-white text-xs font-bold px-3 py-2 rounded-xl border border-slate-700 outline-none"></select>
+            </div>
+        </div>
+
+        <!-- Admin Navigation Tabs -->
+        <div class="flex overflow-x-auto gap-2 pb-1">
+            <button onclick="switchAdminTab('adstorage')" id="admtab-adstorage" class="px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm whitespace-nowrap bg-indigo-600 text-white shadow">
+                <i class="fa-solid fa-photo-film mr-1"></i> Ad ও ডিভাইস স্টোরেজ
+            </button>
+            <button onclick="switchAdminTab('livecontrol')" id="admtab-livecontrol" class="px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm whitespace-nowrap bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                <i class="fa-solid fa-tower-broadcast mr-1 text-rose-500"></i> লাইভ ক্লাস কন্ট্রোল
+            </button>
+            <button onclick="switchAdminTab('courses')" id="admtab-courses" class="px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm whitespace-nowrap bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                <i class="fa-solid fa-chalkboard mr-1"></i> কোর্স ও রেকর্ডেড ক্লাস
+            </button>
+            <button onclick="switchAdminTab('content')" id="admtab-content" class="px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm whitespace-nowrap bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                <i class="fa-solid fa-cloud-arrow-up mr-1"></i> ফ্রি ভিডিও ও PDF
+            </button>
+            <button onclick="switchAdminTab('notifications')" id="admtab-notifications" class="px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm whitespace-nowrap bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                <i class="fa-solid fa-bell mr-1"></i> নোটিফিকেশন
+            </button>
+            <button onclick="switchAdminTab('payments')" id="admtab-payments" class="px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm whitespace-nowrap bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                <i class="fa-solid fa-wallet mr-1"></i> পেমেন্ট নম্বর
+            </button>
+            <button onclick="switchAdminTab('moderators')" id="admtab-moderators" class="px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm whitespace-nowrap bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                <i class="fa-solid fa-users-gear mr-1"></i> ৪ জন মডারেটর
+            </button>
+        </div>
+
+        <!-- ADMIN TAB 1: DEVICE STORAGE & IMAGE/VIDEO AD PUBLISHER -->
+        <div id="admsec-adstorage" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <!-- Publish / Change Image or Short Video Ad from Mobile/Laptop Storage -->
+            <form onsubmit="adminPublishMediaAd(event)" class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-3.5">
+                <h3 class="font-bold text-base text-indigo-600 dark:text-indigo-400 flex items-center gap-2">
+                    <i class="fa-solid fa-rectangle-ad"></i> ছবি বা ছোট ভিডিও Ad পাবলিশ ও পরিবর্তন
+                </h3>
+                <p class="text-xs text-slate-500">আপনার মোবাইল বা ল্যাপটপের স্টোরেজ থেকে সরাসরি যেকোনো ছবি (JPG/PNG) অথবা ছোট ভিডিও (MP4) বেছে নিন। এটি হোমপেজের প্রথম ৩টি ভিডিওর পর দেখাবে।</p>
+
+                <div>
+                    <label class="block text-xs font-bold mb-1">ফোন/ল্যাপটপ থেকে ছবি বা ভিডিও বাছুন</label>
+                    <input type="file" id="adm-ad-media-file" accept="image/*,video/*" onchange="previewSelectedAdMedia(event)" class="w-full text-xs file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-indigo-600 file:text-white hover:file:bg-indigo-700 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl p-1.5">
+                </div>
+
+                <!-- Live Preview of Selected Ad Media -->
+                <div id="adm-ad-media-preview-box" class="hidden rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-black max-h-48 flex items-center justify-center"></div>
+
+                <div>
+                    <label class="block text-xs font-bold mb-1">বিজ্ঞাপনের শিরোনাম (Title)</label>
+                    <input type="text" id="adm-ad-title" required placeholder="যেমন: নতুন স্পেশাল ব্যাচে ভর্তি চলছে!" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold mb-1">বিজ্ঞাপনের সংক্ষিপ্ত বিবরণ</label>
+                    <input type="text" id="adm-ad-desc" required placeholder="যেমন: সকল কোর্সে পাচ্ছেন ৪০% বিশেষ ছাড়" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm outline-none">
+                </div>
+                <div class="flex gap-2">
+                    <button type="submit" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl text-sm shadow transition">
+                        Ad পাবলিশ / পরিবর্তন করুন
+                    </button>
+                    <button type="button" onclick="adminResetAdMedia()" class="px-4 py-2.5 rounded-xl font-bold text-xs bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                        মিডিয়া মুছুন
+                    </button>
+                </div>
+            </form>
+
+            <!-- Device Storage Node Manager (Mobile Storage -> Laptop/PC Storage Upgrade Ready) -->
+            <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+                <h3 class="font-bold text-base text-emerald-600 dark:text-emerald-400 flex items-center gap-2">
+                    <i class="fa-solid fa-hard-drive"></i> ভিডিও ও Ad স্টোরেজ ম্যানেজার
+                </h3>
+                <p class="text-xs text-slate-500">আপনার আপলোড করা বিজ্ঞাপনের ছবি/ভিডিও এবং লাইভ ক্লাসের রেকর্ডিং ফাইল সরাসরি আপনার ডিভাইসের IndexedDB স্টোরেজে সংরক্ষিত থাকে। পরবর্তীতে ল্যাপটপ বা কম্পিউটার যুক্ত করলে এখান থেকে স্টোরেজ সোর্স পরিবর্তন করতে পারবেন।</p>
+
+                <div class="space-y-2.5">
+                    <label class="block text-xs font-bold">সক্রিয় স্টোরেজ ডিভাইস নির্বাচন করুন:</label>
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <button type="button" onclick="switchStorageDevice('mobile')" id="btn-storage-mobile" class="p-3.5 rounded-2xl border-2 border-emerald-500 bg-emerald-50 dark:bg-emerald-950/30 text-left transition">
+                            <i class="fa-solid fa-mobile-screen-button text-lg text-emerald-600 mb-1 block"></i>
+                            <span class="font-bold text-xs block">মোবাইল স্টোরেজ</span>
+                            <span class="text-[10px] text-slate-500">বর্তমানে সক্রিয়</span>
+                        </button>
+                        <button type="button" onclick="switchStorageDevice('laptop')" id="btn-storage-laptop" class="p-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-left transition">
+                            <i class="fa-solid fa-laptop text-lg text-indigo-600 mb-1 block"></i>
+                            <span class="font-bold text-xs block">ল্যাপটপ / PC স্টোরেজ</span>
+                            <span class="text-[10px] text-slate-500">পরবর্তীতে যুক্ত করুন</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-1.5 text-xs">
+                    <div class="flex justify-between">
+                        <span class="text-slate-500">সংরক্ষিত Ad মিডিয়া:</span>
+                        <strong id="storage-ad-status">ডিফল্ট ব্যানার</strong>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-500">সংরক্ষিত লাইভ ক্লাস রেকর্ডিং:</span>
+                        <strong id="storage-live-status">০টি ফাইল</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ADMIN TAB 2: TWO-MODE LIVE CLASS CONTROLLER (PUBLIC vs SPECIFIC COURSE) -->
+        <div id="admsec-livecontrol" class="hidden grid grid-cols-1 md:grid-cols-2 gap-5">
+            <form onsubmit="adminStartLiveClass(event)" class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-3.5">
+                <h3 class="font-bold text-base text-rose-600 dark:text-rose-400 flex items-center gap-2">
+                    <i class="fa-solid fa-tower-broadcast"></i> নতুন লাইভ ক্লাস শুরু করুন (২টি পদ্ধতি)
+                </h3>
+
+                <div>
+                    <label class="block text-xs font-bold mb-1">লাইভের ধরন নির্বাচন করুন:</label>
+                    <select id="adm-live-scope" onchange="toggleAdminLiveCourseSelect()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm font-bold outline-none">
+                        <option value="public">🌐 সবার উদ্দেশ্যে লাইভ (সকল স্টুডেন্টের হোমপেজে দেখাবে)</option>
+                        <option value="course">🔒 নির্দিষ্ট কোর্সের লাইভ (শুধু ওই কোর্সের স্টুডেন্টদের হোমপেজে দেখাবে)</option>
+                    </select>
+                </div>
+
+                <div id="adm-live-course-wrap" class="hidden">
+                    <label class="block text-xs font-bold mb-1">কোন কোর্সের স্টুডেন্টদের জন্য লাইভ?</label>
+                    <select id="adm-live-course-id" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm outline-none"></select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold mb-1">লাইভ ক্লাসের শিরোনাম / টপিক</label>
+                    <input type="text" id="adm-live-title" required placeholder="যেমন: বোর্ড পরীক্ষার স্পেশাল সাজেশন লাইভ ক্লাস" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold mb-1">লাইভ স্ট্রিম লিংক (YouTube/Stream Embed URL)</label>
+                    <input type="url" id="adm-live-url" value="https://www.youtube.com/embed/jfKfPfyJRdk" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold mb-1">অথবা মোবাইল/ল্যাপটপ স্টোরেজ থেকে লাইভ ভিডিও ফাইল যুক্ত করুন (ঐচ্ছিক)</label>
+                    <input type="file" id="adm-live-local-file" accept="video/*" class="w-full text-xs file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-rose-600 file:text-white bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl p-1.5">
+                </div>
+
+                <button type="submit" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 rounded-xl text-sm shadow transition">
+                    <i class="fa-solid fa-play mr-1"></i> লাইভ ক্লাস চালু করুন
+                </button>
+            </form>
+
+            <!-- Active Live Sessions List -->
+            <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+                <h3 class="font-bold text-base">বর্তমানে চলমান লাইভ ক্লাসসমূহ</h3>
+                <p class="text-xs text-slate-500">লাইভ শেষ হয়ে গেলে এখান থেকে বন্ধ (Stop) করে দিতে পারবেন।</p>
+                <div id="adm-active-lives-list" class="space-y-2.5"></div>
+            </div>
+        </div>
+
+        <!-- ADMIN TAB 3: COURSES & PROTECTED RECORDED CLASSES -->
+        <div id="admsec-courses" class="hidden grid grid-cols-1 md:grid-cols-2 gap-5">
+            <!-- Create New Course -->
+            <form onsubmit="adminCreateNewCourse(event)" class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-3.5">
+                <h3 class="font-bold text-base text-indigo-600 dark:text-indigo-400">১. নতুন পেইড কোর্স তৈরি করুন</h3>
+                <div>
+                    <label class="block text-xs font-bold mb-1">কোর্সের নাম</label>
+                    <input type="text" id="adm-crs-title" required placeholder="যেমন: SSC 2027 পূর্ণাঙ্গ প্রস্তুতি ব্যাচ" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold mb-1">কোর্স ফি (৳)</label>
+                        <input type="number" id="adm-crs-price" required value="1500" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold mb-1">মেয়াদ (দিন)</label>
+                        <input type="number" id="adm-crs-days" required value="90" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm outline-none">
+                    </div>
+                </div>
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl text-sm shadow transition">
+                    নতুন কোর্স তৈরি করুন
+                </button>
+            </form>
+
+            <!-- Upload Protected Recorded Class for a Specific Course -->
+            <form onsubmit="adminAddCourseRecordedClass(event)" class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-3.5">
+                <h3 class="font-bold text-base text-emerald-600 dark:text-emerald-400">২. কোর্সভিত্তিক রেকর্ডেড ক্লাস আপলোড</h3>
+                <p class="text-[11px] text-slate-500">এই ক্লাসটি শুধুমাত্র নির্বাচিত কোর্সটি ক্রয় করা স্টুডেন্টরাই তাদের My Course অপশনে দেখতে পারবে।</p>
+                <div>
+                    <label class="block text-xs font-bold mb-1">কোন কোর্সের জন্য আপলোড করবেন?</label>
+                    <select id="adm-rec-course-select" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm outline-none"></select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold mb-1">রেকর্ডেড ক্লাসের শিরোনাম</label>
+                    <input type="text" id="adm-rec-title" required placeholder="যেমন: লেকচার ০৪ - ভেক্টর ও গতিবিদ্যা" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold mb-1">ভিডিও এম্বেড লিংক (YouTube/Vimeo)</label>
+                    <input type="url" id="adm-rec-url" value="https://www.youtube.com/embed/rfscVS0vtbw" required class="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm outline-none">
+                </div>
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-sm shadow transition">
+                    রেকর্ডেড ক্লাস যুক্ত করুন
+                </button>
+            </form>
+        </div>
+
+        <!-- ADMIN TAB 4: FREE VIDEOS & FREE/PAID PDFs -->
+        <div id="admsec-content" class="hidden grid grid-cols-1 md:grid-cols-2 gap-5">
+            <form onsubmit="adminAddFreeVideo(event)" class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-3.5">
+                <h3 class="font-bold text-base text-indigo-600 dark:text-indigo-400">ফ্রি ভিডিও আপলোড</h3>
+                <div>
+                    <label class="block text-xs font-bold mb-1">ভিডিও শিরোনাম (Title)</label>
+                    <input type="text" id="adm-vid-title" required placeholder="যেমন: উচ্চতর গণিত - অধ্যায় ০৩" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold mb-1">বিষয়ের নাম</label>
+                    <input type="text" id="adm-vid-subject" required placeholder="যেমন: Higher Math" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold mb-1">ভিডিও এম্বেড লিংক</label>
+                    <input type="url" id="adm-vid-url" value="https://www.youtube.com/embed/rfscVS0vtbw" required class="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm outline-none">
+                </div>
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl text-sm shadow transition">
+                    ফ্রি ভিডিও পাবলিশ করুন
+                </button>
+            </form>
+
+            <form onsubmit="adminAddPdf(event)" class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-3.5">
+                <h3 class="font-bold text-base text-amber-600 dark:text-amber-400">PDF আপলোড (ফ্রি / পেইড)</h3>
+                <div>
+                    <label class="block text-xs font-bold mb-1">বিষয়ের নাম (Subject Name)</label>
+                    <input type="text" id="adm-pdf-subject" required placeholder="যেমন: পদার্থবিজ্ঞান ২য় পত্র নোট" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-2.5">
+                    <div>
+                        <label class="block text-xs font-bold mb-1">PDF ধরন</label>
+                        <select id="adm-pdf-type" onchange="toggleAdminPdfPriceInput()" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm outline-none">
+                            <option value="free">ফ্রি (Free)</option>
+                            <option value="paid">পেইড (Paid)</option>
+                        </select>
+                    </div>
+                    <div id="adm-pdf-price-wrap" class="opacity-40 pointer-events-none">
+                        <label class="block text-xs font-bold mb-1">মূল্য (Price ৳)</label>
+                        <input type="number" id="adm-pdf-price" value="120" min="10" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold mb-1">PDF ফাইলের নাম</label>
+                    <input type="text" id="adm-pdf-filename" required placeholder="Physics_2nd_Paper_Note.pdf" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm outline-none">
+                </div>
+                <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-2.5 rounded-xl text-sm shadow transition">
+                    PDF পাবলিশ করুন
+                </button>
+            </form>
+        </div>
+
+        <!-- ADMIN TAB 5: TARGETED COURSE OR INDIVIDUAL STUDENT NOTIFICATION -->
+        <div id="admsec-notifications" class="hidden bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm max-w-2xl space-y-4">
+            <h3 class="font-bold text-base text-indigo-600 dark:text-indigo-400">কোর্সভিত্তিক বা নির্দিষ্ট স্টুডেন্টকে নোটিফিকেশন পাঠান</h3>
+
+            <div class="grid grid-cols-2 gap-2 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
+                <button type="button" onclick="setAdminNotifTargetType('course')" id="notif-target-btn-course" class="py-2 rounded-lg text-xs font-bold bg-indigo-600 text-white shadow transition">
+                    নির্দিষ্ট কোর্সের সকল স্টুডেন্ট
+                </button>
+                <button type="button" onclick="setAdminNotifTargetType('individual')" id="notif-target-btn-individual" class="py-2 rounded-lg text-xs font-bold text-slate-600 dark:text-slate-300 transition">
+                    একজন নির্দিষ্ট স্টুডেন্টকে
+                </button>
+            </div>
+
+            <form onsubmit="adminSendTargetedNotification(event)" class="space-y-3.5">
+                <div id="adm-notif-course-box">
+                    <label class="block text-xs font-bold mb-1">কোর্স নির্বাচন করুন</label>
+                    <select id="adm-notif-course-select" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm outline-none"></select>
+                </div>
+
+                <div id="adm-notif-individual-box" class="hidden">
+                    <label class="block text-xs font-bold mb-1">নির্দিষ্ট স্টুডেন্টের মোবাইল নম্বর বা Gmail লিখুন</label>
+                    <input type="text" id="adm-notif-student-id" placeholder="যেমন: 01712345678" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm outline-none">
+                    <p class="text-[11px] text-indigo-600 dark:text-indigo-400 mt-1">বর্তমান লগইনকৃত স্টুডেন্ট: <strong id="hint-current-student-id"></strong></p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold mb-1">ক্লাসের তারিখ</label>
+                        <input type="text" id="adm-notif-date" required placeholder="যেমন: ১৮ নভেম্বর, ২০২৬" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold mb-1">ক্লাসের সময়</label>
+                        <input type="text" id="adm-notif-time" required placeholder="যেমন: রাত ৮:৩০ মিনিট" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold mb-1">নোটিফিকেশন বার্তা</label>
+                    <textarea id="adm-notif-message" rows="2" required placeholder="ক্লাসের রুটিন বা গুরুত্বপূর্ণ নির্দেশনা লিখুন..." class="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm outline-none"></textarea>
+                </div>
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl text-sm shadow transition">
+                    নোটিফিকেশন পাঠান
+                </button>
+            </form>
+        </div>
+
+        <!-- ADMIN TAB 6: PAYMENT NUMBERS -->
+        <div id="admsec-payments" class="hidden bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm max-w-2xl space-y-4">
+            <h3 class="font-bold text-base">বিকাশ, নগদ ও রকেট নম্বর পরিবর্তন করুন</h3>
+            <form onsubmit="adminSavePaymentNumbers(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-extrabold text-[#E2136E] mb-1">বিকাশ (bKash) নম্বর</label>
+                    <input type="tel" id="adm-pay-bkash" required class="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm font-mono font-bold outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-extrabold text-[#F6921E] mb-1">নগদ (Nagad) নম্বর</label>
+                    <input type="tel" id="adm-pay-nagad" required class="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm font-mono font-bold outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-extrabold text-[#8C3494] mb-1">রকেট (Rocket) নম্বর</label>
+                    <input type="tel" id="adm-pay-rocket" required class="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm font-mono font-bold outline-none">
+                </div>
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl text-sm shadow transition">
+                    পেমেন্ট নম্বরসমূহ সেভ করুন
+                </button>
+            </form>
+        </div>
+
+        <!-- ADMIN TAB 7: 4 MODERATORS -->
+        <div id="admsec-moderators" class="hidden bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="font-bold text-base">মডারেটর ম্যানেজমেন্ট (একসাথে সর্বোচ্চ ৪ জন)</h3>
+                    <p class="text-xs text-slate-500">আপনি যেকোনো সময় মডারেটর পরিবর্তন বা নতুন কাউকে যুক্ত করতে পারবেন।</p>
+                </div>
+                <span id="adm-mod-count-pill" class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 text-xs font-extrabold px-3 py-1 rounded-full">০ / ৪ জন</span>
+            </div>
+
+            <form onsubmit="adminAddOrUpdateModerator(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-slate-50 dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700">
+                <input type="text" id="adm-mod-name" required placeholder="মডারেটরের নাম" class="px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-sm outline-none">
+                <input type="text" id="adm-mod-contact" required placeholder="মোবাইল বা Gmail" class="px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-sm outline-none">
+                <button type="submit" id="adm-mod-submit-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-xl text-sm transition">
+                    + মডারেটর যুক্ত করুন
+                </button>
+            </form>
+
+            <div id="adm-moderators-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL 1: VIDEO PLAYER (FREE & COURSE RECORDED) ==================== -->
+    <div id="modal-video-player" class="hidden fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col max-h-[92vh]">
+            <div class="px-4 py-3 bg-indigo-900 text-white flex items-center justify-between">
+                <span id="vp-header-badge" class="text-xs font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-circle-play text-amber-400"></i> ভিডিও ক্লাস প্লেয়ার
+                </span>
+                <button onclick="closeVideoPlayerModal()" class="w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="aspect-video bg-black w-full shrink-0">
+                <iframe id="vp-iframe" class="w-full h-full" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+
+            <div class="p-4 overflow-y-auto space-y-4">
+                <div>
+                    <span id="vp-subject" class="text-[11px] font-bold bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 px-2.5 py-0.5 rounded-full">বিষয়</span>
+                    <h3 id="vp-title" class="text-base sm:text-lg font-bold mt-1">ভিডিও শিরোনাম</h3>
+                </div>
+
+                <!-- Like, Comment & Download Bar (Shown for Free Videos) -->
+                <div id="vp-free-actions-bar" class="grid grid-cols-3 gap-2 py-2 border-y border-slate-200 dark:border-slate-800">
+                    <button onclick="toggleCurrentVideoLike()" id="vp-like-btn" class="flex items-center justify-center gap-1.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-slate-100 dark:bg-slate-800 transition">
+                        <i class="fa-solid fa-thumbs-up"></i>
+                        <span>লাইক (<span id="vp-like-count">0</span>)</span>
+                    </button>
+                    <button onclick="document.getElementById('vp-comment-input').focus()" class="flex items-center justify-center gap-1.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-slate-100 dark:bg-slate-800 transition">
+                        <i class="fa-solid fa-comment"></i>
+                        <span>কমেন্ট (<span id="vp-comment-count">0</span>)</span>
+                    </button>
+                    <button onclick="downloadCurrentVideoToOffline()" id="vp-download-btn" class="flex items-center justify-center gap-1.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-emerald-600 hover:bg-emerald-700 text-white shadow transition">
+                        <i class="fa-solid fa-download"></i>
+                        <span id="vp-download-label">ডাউনলোড</span>
+                    </button>
+                </div>
+
+                <!-- Text-Only Comments Section -->
+                <div id="vp-comments-wrapper" class="space-y-3">
+                    <h4 class="text-xs font-bold text-slate-500">কমেন্ট সেকশন (শুধুমাত্র টেক্সট)</h4>
+                    <form onsubmit="addVideoTextComment(event)" class="flex gap-2">
+                        <input type="text" id="vp-comment-input" required placeholder="আপনার প্রশ্ন বা মতামত লিখুন..." class="flex-1 px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm outline-none">
+                        <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-4 py-2 rounded-xl text-sm">পাঠান</button>
+                    </form>
+                    <div id="vp-comments-list" class="space-y-2 max-h-40 overflow-y-auto"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL 2: INTEGRATED LIVE CLASS ROOM (EMBED + DEVICE VIDEO STREAM) ==================== -->
+    <div id="modal-live-class" class="hidden fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col max-h-[92vh]">
+            <div class="px-4 py-3 bg-gradient-to-r from-rose-600 to-indigo-900 text-white flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-white animate-ping"></span>
+                    <span id="live-room-scope-badge" class="font-bold text-xs sm:text-sm tracking-wide">LIVE CLASS ROOM</span>
+                </div>
+                <button onclick="closeLiveClassRoom()" class="w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Live Stream Container (Supports both Embed URL and Device-Stored Video File) -->
+            <div class="aspect-video bg-black w-full shrink-0 relative">
+                <iframe id="live-room-iframe" class="w-full h-full" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <video id="live-room-local-video" class="hidden w-full h-full object-contain" controls autoplay></video>
+            </div>
+
+            <div class="p-4 overflow-y-auto space-y-3">
+                <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-slate-200 dark:border-slate-800">
+                    <div>
+                        <h3 id="live-room-title" class="font-bold text-base">লাইভ ক্লাসের নাম</h3>
+                        <p id="live-room-subtitle" class="text-xs text-emerald-600 dark:text-emerald-400 font-bold">সরাসরি সম্প্রচার চলছে</p>
+                    </div>
+                </div>
+
+                <!-- Live Text Q&A -->
+                <div class="space-y-2">
+                    <p class="text-xs font-bold text-slate-500">লাইভ ক্লাস প্রশ্নোত্তর (Live Text Q&A):</p>
+                    <div id="live-qa-messages" class="bg-slate-50 dark:bg-slate-800/70 rounded-xl p-3 max-h-32 overflow-y-auto space-y-2 text-xs">
+                        <div><strong class="text-indigo-600 dark:text-indigo-400">শিক্ষক (Live):</strong> সবাইকে স্বাগতম! আজকের ক্লাস নিয়ে কোনো প্রশ্ন থাকলে নিচে লিখে পাঠাও।</div>
+                    </div>
+                    <form onsubmit="sendLiveClassQuestion(event)" class="flex gap-2">
+                        <input type="text" id="live-qa-input" required placeholder="লাইভ ক্লাসে আপনার প্রশ্ন লিখুন..." class="flex-1 px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm outline-none">
+                        <button type="submit" class="bg-indigo-600 text-white font-bold px-4 py-2 rounded-xl text-xs">পাঠান</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL 3: INSTANT PAYMENT GATEWAY ==================== -->
+    <div id="modal-payment-gateway" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-5 sm:p-6 shadow-2xl border border-slate-200 dark:border-slate-800 relative">
+            <button onclick="closePaymentGateway()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="text-center mb-4">
+                <span class="text-[11px] font-bold bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 px-3 py-1 rounded-full">ইনস্ট্যান্ট পেমেন্ট গেটওয়ে</span>
+                <h3 id="pg-item-title" class="text-base sm:text-lg font-bold mt-2">কোর্স বা পিডিএফের নাম</h3>
+                <p class="text-2xl font-extrabold text-indigo-600 dark:text-indigo-400 mt-1">৳ <span id="pg-item-price">0</span></p>
+            </div>
+
+            <div class="mb-3">
+                <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-2">পেমেন্ট মাধ্যম বেছে নিন:</label>
+                <div class="grid grid-cols-3 gap-2">
+                    <button type="button" onclick="selectPaymentMethod('bkash')" id="pg-btn-bkash" class="py-2.5 px-2 rounded-xl border-2 border-[#E2136E] bg-[#E2136E]/10 font-bold text-xs flex flex-col items-center gap-0.5 transition">
+                        <span class="text-sm font-extrabold text-[#E2136E]">bKash</span>
+                        <span>বিকাশ</span>
+                    </button>
+                    <button type="button" onclick="selectPaymentMethod('nagad')" id="pg-btn-nagad" class="py-2.5 px-2 rounded-xl border border-slate-200 dark:border-slate-700 font-bold text-xs flex flex-col items-center gap-0.5 transition">
+                        <span class="text-sm font-extrabold text-[#F6921E]">Nagad</span>
+                        <span>নগদ</span>
+                    </button>
+                    <button type="button" onclick="selectPaymentMethod('rocket')" id="pg-btn-rocket" class="py-2.5 px-2 rounded-xl border border-slate-200 dark:border-slate-700 font-bold text-xs flex flex-col items-center gap-0.5 transition">
+                        <span class="text-sm font-extrabold text-[#8C3494]">Rocket</span>
+                        <span>রকেট</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-slate-100 dark:bg-slate-800 p-3 rounded-xl mb-3 flex items-center justify-between text-xs">
+                <span class="text-slate-500">প্রাপক (<span id="pg-provider-name" class="font-bold">bKash</span>):</span>
+                <span id="pg-admin-receiver-number" class="font-mono font-extrabold text-sm">01700000000</span>
+            </div>
+
+            <form onsubmit="confirmInstantPayment(event)" class="space-y-3">
+                <div>
+                    <label id="pg-sender-label" class="block text-xs font-bold mb-1">আপনার বিকাশ নম্বর দিন</label>
+                    <input type="tel" id="pg-sender-number" required placeholder="01XXXXXXXXX" pattern="[0-9]{11}" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm font-mono outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold mb-1">পিন / পাসওয়ার্ড (PIN / Password)</label>
+                    <input type="password" id="pg-sender-pin" required placeholder="•••••" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm font-mono outline-none">
+                </div>
+                <button type="submit" id="pg-submit-btn" class="w-full bg-[#E2136E] hover:opacity-95 text-white font-bold py-3 rounded-xl shadow-lg transition">
+                    পেমেন্ট সম্পন্ন করুন
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 pointer-events-none flex flex-col gap-2 w-full max-w-sm px-4"></div>
+
+    <!-- ==================== JAVASCRIPT & INDEXEDDB STORAGE ENGINE ==================== -->
+    <script>
+        // -------------------- INDEXEDDB FOR REAL MOBILE/LAPTOP MEDIA STORAGE --------------------
+        const DB_NAME = 'AmarAcademyMediaDB';
+        const DB_STORE = 'deviceMediaStore';
+        let mediaDbInstance = null;
+        let cachedAdMediaObjectURL = null;
+        let cachedAdMediaMime = null;
+        let cachedLiveVideoURLs = {};
+
+        function initDeviceMediaDB() {
+            return new Promise((resolve) => {
+                const req = indexedDB.open(DB_NAME, 1);
+                req.onupgradeneeded = function(e) {
+                    const db = e.target.result;
+                    if (!db.objectStoreNames.contains(DB_STORE)) {
+                        db.createObjectStore(DB_STORE);
+                    }
+                };
+                req.onsuccess = function(e) {
+                    mediaDbInstance = e.target.result;
+                    resolve(mediaDbInstance);
+                };
+                req.onerror = function() {
+                    resolve(null);
+                };
+            });
+        }
+
+        function saveBlobToDeviceStorage(key, blob) {
+            return new Promise((resolve) => {
+                if (!mediaDbInstance) return resolve(false);
+                const tx = mediaDbInstance.transaction(DB_STORE, 'readwrite');
+                tx.objectStore(DB_STORE).put(blob, key);
+                tx.oncomplete = () => resolve(true);
+                tx.onerror = () => resolve(false);
+            });
+        }
+
+        function loadBlobFromDeviceStorage(key) {
+            return new Promise((resolve) => {
+                if (!mediaDbInstance) return resolve(null);
+                const tx = mediaDbInstance.transaction(DB_STORE, 'readonly');
+                const req = tx.objectStore(DB_STORE).get(key);
+                req.onsuccess = () => resolve(req.result || null);
+                req.onerror = () => resolve(null);
+            });
+        }
+
+        function deleteBlobFromDeviceStorage(key) {
+            return new Promise((resolve) => {
+                if (!mediaDbInstance) return resolve(false);
+                const tx = mediaDbInstance.transaction(DB_STORE, 'readwrite');
+                tx.objectStore(DB_STORE).delete(key);
+                tx.oncomplete = () => resolve(true);
+            });
+        }
+
+        async function hydrateStoredMediaFromDevice() {
+            const adBlob = await loadBlobFromDeviceStorage('home_ad_media');
+            if (adBlob instanceof Blob) {
+                if (cachedAdMediaObjectURL) URL.revokeObjectURL(cachedAdMediaObjectURL);
+                cachedAdMediaObjectURL = URL.createObjectURL(adBlob);
+                cachedAdMediaMime = adBlob.type;
+            } else {
+                cachedAdMediaObjectURL = null;
+                cachedAdMediaMime = null;
+            }
+
+            for (const live of appState.liveSessions) {
+                if (live.hasLocalVideo) {
+                    const vBlob = await loadBlobFromDeviceStorage(`live_video_${live.id}`);
+                    if (vBlob instanceof Blob) {
+                        cachedLiveVideoURLs[live.id] = URL.createObjectURL(vBlob);
+                    }
+                }
+            }
+        }
+
+        // -------------------- DEFAULT SEED DATA --------------------
+        const defaultVideos = [
+            {
+                id: 'vid-101',
+                title: 'পাইথন প্রোগ্রামিং ও লজিক বিল্ডিং - লেকচার ০১',
+                subject: 'Python & ICT',
+                url: 'https://www.youtube.com/embed/rfscVS0vtbw',
+                likes: 84,
+                liked: false,
+                comments: [{ user: 'সাকিব আল হাসান', text: 'খুব সুন্দরভাবে বুঝিয়েছেন স্যার, ধন্যবাদ!' }]
+            },
+            {
+                id: 'vid-102',
+                title: 'HSC পদার্থবিজ্ঞান ২য় পত্র - চল তড়িৎ ও সার্কিট সমাধান',
+                subject: 'Physics 2nd Paper',
+                url: 'https://www.youtube.com/embed/FFDMzNnIFxE',
+                likes: 112,
+                liked: false,
+                comments: []
+            },
+            {
+                id: 'vid-103',
+                title: 'ইংরেজি গ্রামার ও রাইটিং পার্ট - স্পেশাল টেকনিক ক্লাস',
+                subject: 'English 2nd Paper',
+                url: 'https://www.youtube.com/embed/jul2urONzOQ',
+                likes: 67,
+                liked: false,
+                comments: []
+            },
+            {
+                id: 'vid-104',
+                title: 'উচ্চতর গণিত - ত্রিকোণমিতি ও ক্যালকুলাস শর্টকাট',
+                subject: 'Higher Math',
+                url: 'https://www.youtube.com/embed/kqtD5dpn9C8',
+                likes: 95,
+                liked: false,
+                comments: []
+            }
+        ];
+
+        const defaultPdfs = [
+            { id: 'pdf-201', subject: 'HSC ICT সম্পূর্ণ হ্যান্ডনোট ও বোর্ড প্রশ্ন সমাধান', isFree: true, price: 0, fileName: 'HSC_ICT_Complete_Handnote.pdf' },
+            { id: 'pdf-202', subject: 'উচ্চতর গণিত ১ম পত্র - ক্যালকুলাস মাস্টার সাজেশন', isFree: false, price: 120, fileName: 'Higher_Math_Calculus_Master_Note.pdf' },
+            { id: 'pdf-203', subject: 'ইংরেজি ভোকাবুলারি ও গ্রামার শর্ট শিট', isFree: true, price: 0, fileName: 'English_Grammar_Short_Sheet.pdf' }
+        ];
+
+        const defaultCourses = [
+            {
+                id: 'crs-301',
+                title: 'HSC 2026 ফাইনাল রিভিশন ও লাইভ মডেল টেস্ট ব্যাচ',
+                price: 1250,
+                validityDays: 45,
+                recordedClasses: [
+                    { id: 'rec-1', title: 'লেকচার ০১ - ভেক্টর ও নিউটনিয়ান বলবিদ্যা (সুরক্ষিত ক্লাস)', url: 'https://www.youtube.com/embed/FFDMzNnIFxE' },
+                    { id: 'rec-2', title: 'লেকচার ০২ - তাপগতিবিদ্যা ও স্থির তড়িৎ সমাধান', url: 'https://www.youtube.com/embed/rfscVS0vtbw' }
+                ]
+            },
+            {
+                id: 'crs-302',
+                title: 'পূর্ণাঙ্গ পাইথন ও ওয়েব ডেভেলপমেন্ট বুটক্যাম্প',
+                price: 1800,
+                validityDays: 90,
+                recordedClasses: [
+                    { id: 'rec-3', title: 'ক্লাস ০১ - পাইথন ডেটা স্ট্রাকচার ও ফাংশন', url: 'https://www.youtube.com/embed/kqtD5dpn9C8' }
+                ]
+            }
+        ];
+
+        // -------------------- APPLICATION STATE --------------------
+        let appState = {
+            currentStudent: JSON.parse(localStorage.getItem('aa_current_student')) || {
+                id: '01712345678',
+                name: 'তানভীর আহমেদ',
+                contact: '01712345678',
+                avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Student1',
+                dob: '2007-05-14',
+                district: 'ঢাকা',
+                upazila: 'উত্তরা',
+                school: 'রাজউক উত্তরা মডেল কলেজ',
+                enrolledCourses: [{ courseId: 'crs-301', daysLeft: 28 }],
+                purchasedPdfIds: [],
+                downloadedVideoIds: ['vid-101']
+            },
+            isLoggedIn: localStorage.getItem('aa_is_logged_in') !== 'false',
+            videos: JSON.parse(localStorage.getItem('aa_videos')) || defaultVideos,
+            pdfs: JSON.parse(localStorage.getItem('aa_pdfs')) || defaultPdfs,
+            courses: JSON.parse(localStorage.getItem('aa_courses')) || defaultCourses,
+            adBanner: JSON.parse(localStorage.getItem('aa_ad_banner')) || {
+                title: 'স্পেশাল স্কলারশিপ ও নতুন ব্যাচে ভর্তি চলছে!',
+                description: 'আমার একাডেমির সকল প্রিমিয়াম কোর্সে পাচ্ছেন ৪০% পর্যন্ত বিশেষ ছাড়।',
+                hasCustomMedia: false
+            },
+            liveSessions: JSON.parse(localStorage.getItem('aa_live_sessions')) || [
+                {
+                    id: 'live-1',
+                    scope: 'course',
+                    courseId: 'crs-301',
+                    title: 'পদার্থবিজ্ঞান ২য় পত্র সৃজনশীল লাইভ ক্লাস',
+                    embedUrl: 'https://www.youtube.com/embed/jfKfPfyJRdk',
+                    hasLocalVideo: false
+                }
+            ],
+            storageDevice: localStorage.getItem('aa_storage_device') || 'mobile',
+            paymentNumbers: JSON.parse(localStorage.getItem('aa_pay_numbers')) || {
+                bkash: '01711-223344',
+                nagad: '01811-556677',
+                rocket: '01911-889900'
+            },
+            moderators: JSON.parse(localStorage.getItem('aa_moderators')) || [
+                { id: 'mod-1', name: 'সাদিয়া আফরিন', contact: '01722-112233' },
+                { id: 'mod-2', name: 'মাহমুদুল হাসান', contact: 'mahmud@amaracademy.com' }
+            ],
+            notifications: JSON.parse(localStorage.getItem('aa_notifications')) || [
+                {
+                    id: 'ntf-1',
+                    targetType: 'course',
+                    targetId: 'crs-301',
+                    title: 'HSC 2026 ফাইনাল রিভিশন ব্যাচ - লাইভ ক্লাস রুটিন',
+                    message: 'আজ রাত ৮:৩০ মিনিটে পদার্থবিজ্ঞান ২য় পত্রের সৃজনশীল সমাধান লাইভ ক্লাস অনুষ্ঠিত হবে।',
+                    date: '১৭ নভেম্বর, ২০২৬',
+                    time: 'রাত ৮:৩০ মিনিট',
+                    unread: true
+                }
+            ],
+            darkMode: localStorage.getItem('aa_dark_mode') === 'true'
+        };
+
+        let authMode = 'register';
+        let tempRegData = {};
+        let activeStudentTab = 'home';
+        let activeVideoPlayerId = null;
+        let activeSearchFilter = 'videos';
+        let currentPaymentIntent = null;
+        let selectedPaymentProvider = 'bkash';
+        let activeAdminOperator = 'Main Admin (আপনি)';
+        let adminNotifTargetType = 'course';
+        let pendingAdFileBlob = null;
+
+        function persistState() {
+            localStorage.setItem('aa_current_student', JSON.stringify(appState.currentStudent));
+            localStorage.setItem('aa_is_logged_in', appState.isLoggedIn);
+            localStorage.setItem('aa_videos', JSON.stringify(appState.videos));
+            localStorage.setItem('aa_pdfs', JSON.stringify(appState.pdfs));
+            localStorage.setItem('aa_courses', JSON.stringify(appState.courses));
+            localStorage.setItem('aa_ad_banner', JSON.stringify(appState.adBanner));
+            localStorage.setItem('aa_live_sessions', JSON.stringify(appState.liveSessions));
+            localStorage.setItem('aa_storage_device', appState.storageDevice);
+            localStorage.setItem('aa_pay_numbers', JSON.stringify(appState.paymentNumbers));
+            localStorage.setItem('aa_moderators', JSON.stringify(appState.moderators));
+            localStorage.setItem('aa_notifications', JSON.stringify(appState.notifications));
+            localStorage.setItem('aa_dark_mode', appState.darkMode);
+        }
+
+        // -------------------- INITIALIZATION --------------------
+        window.onload = async function() {
+            if (appState.darkMode) document.documentElement.classList.add('dark');
+            await initDeviceMediaDB();
+            await hydrateStoredMediaFromDevice();
+
+            if (appState.isLoggedIn && appState.currentStudent) {
+                showStudentDashboard();
+            } else {
+                showAuthOnboarding();
+            }
+        };
+
+        function showToast(text) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'bg-slate-900 dark:bg-indigo-600 text-white text-xs sm:text-sm font-semibold px-4 py-3 rounded-2xl shadow-xl border border-white/10 text-center transition-all duration-300';
+            toast.innerText = text;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3200);
+        }
+
+        // -------------------- SYSTEM VIEW SWITCHER --------------------
+        function switchSystemView(view) {
+            const authWrap = document.getElementById('auth-onboarding-wrapper');
+            const stuWrap = document.getElementById('student-dashboard-wrapper');
+            const admWrap = document.getElementById('admin-panel-wrapper');
+            const btnStu = document.getElementById('btn-view-student');
+            const btnAdm = document.getElementById('btn-view-admin');
+            const badge = document.getElementById('top-role-badge');
+
+            if (view === 'student') {
+                admWrap.classList.add('hidden');
+                btnStu.className = 'px-3 py-1 rounded-lg font-bold bg-indigo-600 text-white shadow transition';
+                btnAdm.className = 'px-3 py-1 rounded-lg font-bold text-slate-300 hover:text-white transition';
+                badge.innerText = 'স্টুডেন্ট ভিউ';
+
+                if (appState.isLoggedIn && appState.currentStudent) {
+                    authWrap.classList.add('hidden');
+                    stuWrap.classList.remove('hidden');
+                    switchStudentTab(activeStudentTab);
+                } else {
+                    stuWrap.classList.add('hidden');
+                    authWrap.classList.remove('hidden');
+                }
+            } else {
+                authWrap.classList.add('hidden');
+                stuWrap.classList.add('hidden');
+                admWrap.classList.remove('hidden');
+                btnAdm.className = 'px-3 py-1 rounded-lg font-bold bg-amber-400 text-slate-950 shadow transition';
+                btnStu.className = 'px-3 py-1 rounded-lg font-bold text-slate-300 hover:text-white transition';
+                badge.innerText = activeAdminOperator;
+                initAdminDashboard();
+            }
+        }
+
+        // -------------------- AUTHENTICATION & 2-STEP ONBOARDING --------------------
+        function showAuthOnboarding() {
+            document.getElementById('student-dashboard-wrapper').classList.add('hidden');
+            document.getElementById('auth-onboarding-wrapper').classList.remove('hidden');
+            document.getElementById('auth-step-login').classList.remove('hidden');
+            document.getElementById('auth-step-avatar').classList.add('hidden');
+            document.getElementById('auth-step-details').classList.add('hidden');
+        }
+
+        function showStudentDashboard() {
+            document.getElementById('auth-onboarding-wrapper').classList.add('hidden');
+            document.getElementById('student-dashboard-wrapper').classList.remove('hidden');
+            syncStudentProfileUI();
+            switchStudentTab('home');
+            updateNotificationCounter();
+        }
+
+        function setAuthMode(mode) {
+            authMode = mode;
+            const regTab = document.getElementById('auth-tab-register');
+            const logTab = document.getElementById('auth-tab-login');
+            const nameBox = document.getElementById('auth-fullname-field');
+            const submitBtn = document.getElementById('auth-submit-btn');
+
+            if (mode === 'register') {
+                regTab.className = 'py-2 rounded-lg text-xs font-bold bg-indigo-600 text-white shadow transition';
+                logTab.className = 'py-2 rounded-lg text-xs font-bold text-slate-600 dark:text-slate-300 transition';
+                nameBox.classList.remove('hidden');
+                submitBtn.innerText = 'পরবর্তী ধাপে যান →';
+            } else {
+                logTab.className = 'py-2 rounded-lg text-xs font-bold bg-indigo-600 text-white shadow transition';
+                regTab.className = 'py-2 rounded-lg text-xs font-bold text-slate-600 dark:text-slate-300 transition';
+                nameBox.classList.add('hidden');
+                submitBtn.innerText = 'লগইন করুন';
+            }
+        }
+
+        function handleAuthSubmit(e) {
+            e.preventDefault();
+            const identifier = document.getElementById('auth-identifier-input').value.trim();
+            const nameInput = document.getElementById('auth-name-input').value.trim();
+
+            if (authMode === 'login' && appState.currentStudent && appState.currentStudent.contact === identifier) {
+                appState.isLoggedIn = true;
+                persistState();
+                showStudentDashboard();
+                showToast('সফলভাবে লগইন হয়েছে!');
+                return;
+            }
+
+            tempRegData = {
+                id: identifier,
+                name: nameInput || 'নতুন শিক্ষার্থী',
+                contact: identifier,
+                avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + encodeURIComponent(identifier)
+            };
+            document.getElementById('onboarding-avatar-preview').src = tempRegData.avatar;
+            document.getElementById('auth-step-login').classList.add('hidden');
+            document.getElementById('auth-step-avatar').classList.remove('hidden');
+        }
+
+        function selectPresetAvatar(url) {
+            tempRegData.avatar = url;
+            document.getElementById('onboarding-avatar-preview').src = url;
+        }
+
+        function handleLocalAvatarFile(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                tempRegData.avatar = ev.target.result;
+                document.getElementById('onboarding-avatar-preview').src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function skipAvatarStep() {
+            tempRegData.avatar = 'https://api.dicebear.com/7.x/initials/svg?seed=' + encodeURIComponent(tempRegData.name);
+            goToDetailsStep();
+        }
+
+        function confirmAvatarStep() { goToDetailsStep(); }
+
+        function goToDetailsStep() {
+            document.getElementById('auth-step-avatar').classList.add('hidden');
+            document.getElementById('auth-step-details').classList.remove('hidden');
+        }
+
+        function completeStudentOnboarding(e) {
+            e.preventDefault();
+            appState.currentStudent = {
+                id: tempRegData.id,
+                name: tempRegData.name,
+                contact: tempRegData.contact,
+                avatar: tempRegData.avatar,
+                dob: document.getElementById('onboard-dob').value,
+                district: document.getElementById('onboard-district').value.trim(),
+                upazila: document.getElementById('onboard-upazila').value.trim(),
+                school: document.getElementById('onboard-school').value.trim(),
+                enrolledCourses: [],
+                purchasedPdfIds: [],
+                downloadedVideoIds: []
+            };
+            appState.isLoggedIn = true;
+            persistState();
+            showStudentDashboard();
+            showToast('অভিনন্দন! আপনার স্টুডেন্ট অ্যাকাউন্ট তৈরি সম্পন্ন হয়েছে।');
+        }
+
+        function quickDemoLogin() {
+            appState.isLoggedIn = true;
+            persistState();
+            showStudentDashboard();
+            showToast('ডেমো স্টুডেন্ট অ্যাকাউন্টে প্রবেশ করেছেন!');
+        }
+
+        function logoutStudentAccount() {
+            appState.isLoggedIn = false;
+            persistState();
+            showAuthOnboarding();
+        }
+
+        // -------------------- STUDENT TAB NAVIGATION --------------------
+        function switchStudentTab(tab) {
+            activeStudentTab = tab;
+            ['home', 'videos', 'mycourse', 'pdf', 'notifications', 'menu'].forEach(s => {
+                const sec = document.getElementById(`student-sec-${s}`);
+                const bar = document.getElementById(`tab-bar-${s}`);
+                if (sec) sec.classList.toggle('hidden', s !== tab);
+                if (bar) bar.classList.toggle('hidden', s !== tab);
+            });
+
+            if (tab === 'home') renderHomeFeed();
+            if (tab === 'videos') renderFreeVideosTab();
+            if (tab === 'mycourse') {
+                exitCourseClassroom();
+                renderMyCourseTab();
+            }
+            if (tab === 'pdf') renderPdfTab();
+            if (tab === 'notifications') renderNotificationsTab();
+            if (tab === 'menu') {
+                returnToMenuOverview();
+                syncStudentProfileUI();
+            }
+        }
+
+        // -------------------- 1. HOME FEED (LIVE BANNERS + VIDEOS + DEVICE AD AFTER 3RD VIDEO) --------------------
+        function getRelevantLiveSessionsForStudent() {
+            const enrolledIds = appState.currentStudent ? appState.currentStudent.enrolledCourses.filter(e => e.daysLeft > 0).map(e => e.courseId) : [];
+            return appState.liveSessions.filter(live => {
+                if (live.scope === 'public') return true;
+                if (live.scope === 'course' && enrolledIds.includes(live.courseId)) return true;
+                return false;
+            });
+        }
+
+        function renderHomeFeed() {
+            // Render Live Banner at the very top of Home
+            const liveSlot = document.getElementById('home-live-banner-slot');
+            const visibleLives = getRelevantLiveSessionsForStudent();
+            if (visibleLives.length > 0) {
+                liveSlot.innerHTML = visibleLives.map(live => {
+                    const crs = live.scope === 'course' ? appState.courses.find(c => c.id === live.courseId) : null;
+                    return `
+                        <div onclick="joinLiveSession('${live.id}')" class="bg-gradient-to-r from-rose-600 via-rose-700 to-indigo-900 text-white p-4 rounded-2xl shadow-lg border border-rose-400/30 flex items-center justify-between gap-3 cursor-pointer hover:brightness-105 transition">
+                            <div class="space-y-1 min-w-0">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-white animate-ping"></span>
+                                    <span class="text-[10px] font-extrabold uppercase tracking-wider bg-black/30 px-2 py-0.5 rounded">
+                                        ${live.scope === 'public' ? '🌐 সবার জন্য লাইভ চলছে' : '🔒 কোর্স স্পেশাল লাইভ'}
+                                    </span>
+                                </div>
+                                <h3 class="font-bold text-sm sm:text-base truncate">${live.title}</h3>
+                                ${crs ? `<p class="text-[11px] text-rose-100 truncate">কোর্স: ${crs.title}</p>` : ''}
+                            </div>
+                            <button class="bg-white text-rose-700 font-extrabold text-xs px-3.5 py-2 rounded-xl shadow shrink-0">
+                                যুক্ত হন →
+                            </button>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                liveSlot.innerHTML = '';
+            }
+
+            // Render Home Feed
+            const container = document.getElementById('home-feed-list');
+            let html = '';
+
+            // First 3 Videos
+            const firstThree = appState.videos.slice(0, 3);
+            firstThree.forEach((vid, index) => {
+                html += buildVideoCardHTML(vid);
+                if (index === 0 && appState.pdfs.length > 0) {
+                    html += buildPdfCardHTML(appState.pdfs[0]);
+                }
+            });
+
+            // AD BANNER AFTER FIRST 3 VIDEOS (Supports Image or Short Video from Device Storage)
+            html += buildHomeAdBannerHTML();
+
+            // Remaining Videos
+            appState.videos.slice(3).forEach(vid => {
+                html += buildVideoCardHTML(vid);
+            });
+
+            // Courses Preview
+            html += `
+                <div class="pt-2">
+                    <div class="flex items-center justify-between mb-2.5">
+                        <h3 class="font-bold text-sm text-slate-800 dark:text-slate-200">জনপ্রিয় পেইড কোর্সসমূহ</h3>
+                        <button onclick="switchStudentTab('mycourse')" class="text-xs font-bold text-indigo-600 dark:text-indigo-400">সব দেখুন →</button>
+                    </div>
+                    <div class="space-y-3">
+                        ${appState.courses.slice(0, 2).map(c => buildCourseCardHTML(c)).join('')}
+                    </div>
+                </div>
+            `;
+
+            // Remaining PDFs
+            appState.pdfs.slice(1).forEach(pdf => {
+                html += buildPdfCardHTML(pdf);
+            });
+
+            container.innerHTML = html;
+        }
+
+        function buildHomeAdBannerHTML() {
+            let mediaBlock = '';
+            if (cachedAdMediaObjectURL && cachedAdMediaMime) {
+                if (cachedAdMediaMime.startsWith('video/')) {
+                    mediaBlock = `
+                        <video src="${cachedAdMediaObjectURL}" class="w-full max-h-56 object-cover rounded-xl mb-3 bg-black" autoplay loop muted playsinline></video>
+                    `;
+                } else if (cachedAdMediaMime.startsWith('image/')) {
+                    mediaBlock = `
+                        <img src="${cachedAdMediaObjectURL}" alt="Ad" class="w-full max-h-56 object-cover rounded-xl mb-3">
+                    `;
+                }
+            }
+
+            return `
+                <div class="bg-gradient-to-r from-indigo-900 via-indigo-800 to-slate-900 text-white rounded-2xl p-4 sm:p-5 shadow-lg border border-indigo-400/20 relative overflow-hidden">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-[10px] font-bold uppercase tracking-wider bg-white/15 px-2.5 py-0.5 rounded text-amber-300">Ad • বিজ্ঞাপন</span>
+                        <span class="text-[10px] text-indigo-200">স্পন্সরড</span>
+                    </div>
+                    ${mediaBlock}
+                    <div class="space-y-1">
+                        <h3 class="text-base sm:text-lg font-bold text-white">${appState.adBanner.title}</h3>
+                        <p class="text-xs text-indigo-100 leading-relaxed">${appState.adBanner.description}</p>
+                        <div class="pt-2">
+                            <button onclick="switchStudentTab('mycourse')" class="bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs px-4 py-2 rounded-xl shadow transition">
+                                ${appState.adBanner.buttonText || 'বিস্তারিত দেখুন'} →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function buildVideoCardHTML(vid) {
+            return `
+                <div onclick="openVideoPlayerModal('${vid.id}', 'free')" class="bg-white dark:bg-slate-800/90 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700/80 shadow-sm hover:shadow-md transition cursor-pointer group">
+                    <div class="bg-gradient-to-br from-indigo-900 via-slate-800 to-indigo-950 h-44 sm:h-52 flex flex-col items-center justify-center relative p-4">
+                        <div class="w-14 h-14 rounded-full bg-white/15 backdrop-blur-sm border border-white/25 flex items-center justify-center group-hover:scale-110 group-hover:bg-indigo-600 transition shadow-lg">
+                            <i class="fa-solid fa-play text-xl text-white ml-0.5"></i>
+                        </div>
+                        <span class="mt-2.5 text-xs font-bold text-indigo-200 bg-black/30 px-3 py-1 rounded-full">
+                            ${vid.subject} • ফ্রি ক্লাস
+                        </span>
+                        <div class="absolute bottom-2.5 right-3 flex items-center gap-3 text-[11px] text-slate-300">
+                            <span><i class="fa-solid fa-thumbs-up mr-1"></i>${vid.likes}</span>
+                            <span><i class="fa-solid fa-comment mr-1"></i>${vid.comments.length}</span>
+                        </div>
+                    </div>
+                    <div class="p-3.5 bg-slate-50 dark:bg-slate-800">
+                        <h4 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white leading-snug">
+                            <span class="text-indigo-600 dark:text-indigo-400">Title:</span> ${vid.title}
+                        </h4>
+                    </div>
+                </div>
+            `;
+        }
+
+        function buildPdfCardHTML(pdf) {
+            const stu = appState.currentStudent;
+            const isUnlocked = pdf.isFree || (stu && stu.purchasedPdfIds.includes(pdf.id));
+            const statusLabel = pdf.isFree
+                ? `<span class="text-xs font-extrabold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-0.5 rounded-lg">Free</span>`
+                : (isUnlocked
+                    ? `<span class="text-xs font-extrabold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 px-2.5 py-0.5 rounded-lg">ক্রয়কৃত (Free)</span>`
+                    : `<span class="text-xs font-extrabold text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 px-2.5 py-0.5 rounded-lg">Price: ${pdf.price}৳</span>`);
+
+            return `
+                <div class="bg-white dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 shadow-sm flex items-center justify-between gap-3">
+                    <div class="space-y-2 min-w-0">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-900/40 text-amber-600 flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-file-pdf"></i>
+                            </div>
+                            <h4 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white truncate">${pdf.subject}</h4>
+                        </div>
+                        <div class="pl-10">${statusLabel}</div>
+                    </div>
+                    <div class="flex flex-col items-end gap-2 shrink-0">
+                        <button onclick="previewPdfDocument('${pdf.id}')" class="px-3 py-1 rounded-lg text-[11px] font-bold bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 transition">
+                            pdf link
+                        </button>
+                        <button onclick="handlePdfDownloadAction('${pdf.id}')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold ${isUnlocked ? 'bg-emerald-600 hover:bg-emerald-700 text-white' : 'bg-indigo-600 hover:bg-indigo-700 text-white'} shadow-sm transition flex items-center gap-1.5">
+                            <i class="fa-solid ${isUnlocked ? 'fa-download' : 'fa-lock'} text-[11px]"></i>
+                            <span>Download</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function buildCourseCardHTML(course) {
+            const stu = appState.currentStudent;
+            const enrollment = stu ? stu.enrolledCourses.find(e => e.courseId === course.id && e.daysLeft > 0) : null;
+            const courseLive = appState.liveSessions.find(l => l.scope === 'course' && l.courseId === course.id);
+
+            if (enrollment) {
+                return `
+                    <div onclick="openCourseClassroom('${course.id}')" class="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden border-2 border-emerald-500 shadow-md cursor-pointer group">
+                        <div class="bg-gradient-to-r from-indigo-900 to-slate-900 p-5 text-white relative">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="bg-emerald-500 text-slate-950 text-xs font-extrabold px-3 py-1 rounded-full">
+                                    মেয়াদ বাকি: ${enrollment.daysLeft} দিন
+                                </span>
+                                ${courseLive ? `<span class="bg-rose-600 text-white text-xs font-bold px-3 py-1 rounded-full animate-pulse">● Live চলছে</span>` : `<span class="text-xs bg-white/15 px-2.5 py-0.5 rounded-full">${(course.recordedClasses || []).length}টি রেকর্ডেড ক্লাস</span>`}
+                            </div>
+                            <div class="py-3 text-center">
+                                <div class="w-12 h-12 rounded-full bg-white/15 mx-auto flex items-center justify-center mb-2 group-hover:scale-110 transition">
+                                    <i class="fa-solid fa-chalkboard-user text-xl text-amber-300"></i>
+                                </div>
+                                <span class="font-bold text-sm text-indigo-100">কোর্স ক্লাসরুমে প্রবেশ করুন (লাইভ ও রেকর্ডেড ক্লাস)</span>
+                            </div>
+                        </div>
+                        <div class="p-3.5 bg-slate-50 dark:bg-slate-800">
+                            <h4 class="font-bold text-sm text-slate-900 dark:text-white">Title: ${course.title}</h4>
+                        </div>
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <div class="bg-gradient-to-br from-slate-800 via-indigo-950 to-slate-900 p-4 h-44 flex flex-col justify-between text-white">
+                        <div class="flex items-center justify-between">
+                            <span class="bg-amber-400 text-slate-950 text-xs font-extrabold px-3 py-1 rounded-xl shadow">
+                                ${course.price} ৳
+                            </span>
+                            <span class="text-[11px] bg-white/15 px-2.5 py-0.5 rounded-full">মেয়াদ: ${course.validityDays} দিন</span>
+                        </div>
+                        <div class="text-center">
+                            <i class="fa-solid fa-chalkboard-user text-3xl text-indigo-300 mb-1"></i>
+                            <p class="text-xs text-indigo-200">লাইভ ও রেকর্ডেড ক্লাস সমৃদ্ধ কোর্স</p>
+                        </div>
+                        <div class="self-end">
+                            <button onclick="openPaymentGateway('course', '${course.id}', '${course.title.replace(/'/g, "\\'")}', ${course.price})" class="bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-xs px-5 py-2 rounded-xl shadow-lg transition">
+                                Pay
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-3.5 bg-slate-50 dark:bg-slate-800">
+                        <h4 class="font-bold text-sm text-slate-900 dark:text-white">Title: ${course.title}</h4>
+                    </div>
+                </div>
+            `;
+        }
+
+        // -------------------- 2. FREE VIDEOS & PROTECTED RECORDED PLAYER --------------------
+        function renderFreeVideosTab() {
+            document.getElementById('free-videos-list').innerHTML = appState.videos.map(v => buildVideoCardHTML(v)).join('');
+        }
+
+        function openVideoPlayerModal(vidId, mode = 'free', customCourseObj = null) {
+            if (mode === 'free') {
+                const vid = appState.videos.find(v => v.id === vidId);
+                if (!vid) return;
+                activeVideoPlayerId = vidId;
+                document.getElementById('vp-header-badge').innerHTML = `<i class="fa-solid fa-circle-play text-amber-400"></i> ফ্রি ভিডিও ক্লাস প্লেয়ার`;
+                document.getElementById('vp-iframe').src = vid.url;
+                document.getElementById('vp-subject').innerText = vid.subject;
+                document.getElementById('vp-title').innerText = vid.title;
+                document.getElementById('vp-free-actions-bar').classList.remove('hidden');
+                document.getElementById('vp-comments-wrapper').classList.remove('hidden');
+                refreshVideoPlayerUI(vid);
+            } else if (mode === 'recorded' && customCourseObj) {
+                const rec = (customCourseObj.recordedClasses || []).find(r => r.id === vidId);
+                if (!rec) return;
+                activeVideoPlayerId = null;
+                document.getElementById('vp-header-badge').innerHTML = `<i class="fa-solid fa-lock text-emerald-400"></i> সুরক্ষিত কোর্স রেকর্ডেড ক্লাস`;
+                document.getElementById('vp-iframe').src = rec.url;
+                document.getElementById('vp-subject').innerText = customCourseObj.title;
+                document.getElementById('vp-title').innerText = rec.title;
+                document.getElementById('vp-free-actions-bar').classList.add('hidden');
+                document.getElementById('vp-comments-wrapper').classList.add('hidden');
+            }
+            document.getElementById('modal-video-player').classList.remove('hidden');
+        }
+
+        function closeVideoPlayerModal() {
+            document.getElementById('vp-iframe').src = '';
+            document.getElementById('modal-video-player').classList.add('hidden');
+            activeVideoPlayerId = null;
+        }
+
+        function refreshVideoPlayerUI(vid) {
+            document.getElementById('vp-like-count').innerText = vid.likes;
+            document.getElementById('vp-comment-count').innerText = vid.comments.length;
+
+            const likeBtn = document.getElementById('vp-like-btn');
+            likeBtn.className = vid.liked
+                ? 'flex items-center justify-center gap-1.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-indigo-600 text-white shadow transition'
+                : 'flex items-center justify-center gap-1.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 transition';
+
+            const isDl = appState.currentStudent.downloadedVideoIds.includes(vid.id);
+            const dlBtn = document.getElementById('vp-download-btn');
+            const dlLabel = document.getElementById('vp-download-label');
+            dlBtn.className = isDl
+                ? 'flex items-center justify-center gap-1.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-slate-700 text-white transition'
+                : 'flex items-center justify-center gap-1.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-emerald-600 hover:bg-emerald-700 text-white shadow transition';
+            dlLabel.innerText = isDl ? 'ডাউনলোডেড ✓' : 'ডাউনলোড';
+
+            const cList = document.getElementById('vp-comments-list');
+            cList.innerHTML = vid.comments.length === 0
+                ? `<p class="text-xs text-slate-400 text-center py-2">এখনো কোনো কমেন্ট নেই।</p>`
+                : vid.comments.map(c => `
+                    <div class="bg-slate-50 dark:bg-slate-800/80 p-2.5 rounded-xl border border-slate-100 dark:border-slate-700">
+                        <p class="text-xs font-bold text-indigo-600 dark:text-indigo-400">${c.user}</p>
+                        <p class="text-xs text-slate-700 dark:text-slate-300 mt-0.5">${c.text}</p>
+                    </div>
+                `).join('');
+        }
+
+        function toggleCurrentVideoLike() {
+            const vid = appState.videos.find(v => v.id === activeVideoPlayerId);
+            if (!vid) return;
+            vid.liked = !vid.liked;
+            vid.likes += vid.liked ? 1 : -1;
+            persistState();
+            refreshVideoPlayerUI(vid);
+        }
+
+        function addVideoTextComment(e) {
+            e.preventDefault();
+            const input = document.getElementById('vp-comment-input');
+            const text = input.value.trim();
+            if (!text) return;
+            const vid = appState.videos.find(v => v.id === activeVideoPlayerId);
+            if (!vid) return;
+            vid.comments.unshift({ user: appState.currentStudent.name, text });
+            input.value = '';
+            persistState();
+            refreshVideoPlayerUI(vid);
+            showToast('কমেন্ট যুক্ত হয়েছে!');
+        }
+
+        function downloadCurrentVideoToOffline() {
+            const vid = appState.videos.find(v => v.id === activeVideoPlayerId);
+            if (!vid) return;
+            if (!appState.currentStudent.downloadedVideoIds.includes(vid.id)) {
+                appState.currentStudent.downloadedVideoIds.push(vid.id);
+                pushAutoNotification(`আপনি "${vid.title}" ভিডিওটি ডাউনলোড করেছেন।`);
+                persistState();
+                refreshVideoPlayerUI(vid);
+                showToast('ভিডিওটি Downloaded অপশনে সেভ হয়েছে!');
+            } else {
+                showToast('ভিডিওটি ইতিমধ্যে ডাউনলোড করা আছে।');
+            }
+        }
+
+        // -------------------- 3. MY COURSE & PROTECTED COURSE CLASSROOM --------------------
+        function renderMyCourseTab() {
+            const purchasedBox = document.getElementById('my-purchased-courses-list');
+            const unpurchasedBox = document.getElementById('unpurchased-courses-list');
+
+            const enrolledIds = appState.currentStudent.enrolledCourses.filter(e => e.daysLeft > 0).map(e => e.courseId);
+            const purchasedCourses = appState.courses.filter(c => enrolledIds.includes(c.id));
+            const unpurchasedCourses = appState.courses.filter(c => !enrolledIds.includes(c.id));
+
+            purchasedBox.innerHTML = purchasedCourses.length === 0
+                ? `<div class="bg-slate-100 dark:bg-slate-800/60 p-4 rounded-2xl text-xs text-slate-500 text-center">আপনার কোনো সক্রিয় কোর্স নেই। নিচ থেকে পছন্দের কোর্সটি ক্রয় করুন।</div>`
+                : purchasedCourses.map(c => buildCourseCardHTML(c)).join('');
+
+            unpurchasedBox.innerHTML = unpurchasedCourses.map(c => buildCourseCardHTML(c)).join('');
+        }
+
+        function openCourseClassroom(courseId) {
+            const course = appState.courses.find(c => c.id === courseId);
+            const enrollment = appState.currentStudent.enrolledCourses.find(e => e.courseId === courseId && e.daysLeft > 0);
+            if (!course || !enrollment) return;
+
+            document.getElementById('mycourse-list-view').classList.add('hidden');
+            document.getElementById('course-classroom-view').classList.remove('hidden');
+
+            document.getElementById('cls-room-title').innerText = course.title;
+            document.getElementById('cls-room-validity').innerText = `মেয়াদ বাকি: ${enrollment.daysLeft} দিন`;
+
+            // Check if a Live Class is currently active for this specific course
+            const activeCourseLive = appState.liveSessions.find(l => l.scope === 'course' && l.courseId === courseId);
+            const liveBox = document.getElementById('cls-room-live-box');
+            if (activeCourseLive) {
+                liveBox.innerHTML = `
+                    <div onclick="joinLiveSession('${activeCourseLive.id}')" class="bg-rose-600 text-white p-4 rounded-2xl shadow-lg flex items-center justify-between gap-3 cursor-pointer hover:bg-rose-700 transition">
+                        <div class="flex items-center gap-3">
+                            <span class="w-3 h-3 rounded-full bg-white animate-ping shrink-0"></span>
+                            <div>
+                                <span class="text-[10px] font-bold uppercase bg-black/25 px-2 py-0.5 rounded">সরাসরি লাইভ ক্লাস চলছে</span>
+                                <h4 class="font-bold text-sm mt-0.5">${activeCourseLive.title}</h4>
+                            </div>
+                        </div>
+                        <button class="bg-white text-rose-700 font-extrabold text-xs px-3.5 py-2 rounded-xl shrink-0">লাইভে যুক্ত হন</button>
+                    </div>
+                `;
+            } else {
+                liveBox.innerHTML = `
+                    <div class="bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 p-3.5 rounded-2xl text-xs text-slate-500 flex items-center justify-between">
+                        <span>বর্তমানে এই কোর্সে কোনো লাইভ ক্লাস চলছে না।</span>
+                        <span class="font-bold text-indigo-600 dark:text-indigo-400">নিচের রেকর্ডেড ক্লাস দেখুন</span>
+                    </div>
+                `;
+            }
+
+            // Render Protected Recorded Classes for Buyers of This Course
+            const recList = document.getElementById('cls-room-recorded-list');
+            const recs = course.recordedClasses || [];
+            if (recs.length === 0) {
+                recList.innerHTML = `<p class="text-xs text-slate-500 bg-slate-50 dark:bg-slate-800 p-4 rounded-2xl text-center">এই কোর্সে এখনো কোনো রেকর্ডেড ক্লাস আপলোড করা হয়নি।</p>`;
+            } else {
+                recList.innerHTML = recs.map((r, idx) => `
+                    <div onclick='openRecordedClassFromCourse("${course.id}", "${r.id}")' class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-2xl shadow-sm flex items-center justify-between gap-3 cursor-pointer hover:border-indigo-500 transition">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <div class="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-300 flex items-center justify-center font-bold shrink-0">
+                                ${idx + 1}
+                            </div>
+                            <div class="min-w-0">
+                                <span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">রেকর্ডেড ক্লাস</span>
+                                <h5 class="font-bold text-sm truncate">${r.title}</h5>
+                            </div>
+                        </div>
+                        <span class="w-9 h-9 rounded-full bg-indigo-600 text-white flex items-center justify-center shrink-0">
+                            <i class="fa-solid fa-play text-xs ml-0.5"></i>
+                        </span>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function openRecordedClassFromCourse(courseId, recId) {
+            const course = appState.courses.find(c => c.id === courseId);
+            if (!course) return;
+            openVideoPlayerModal(recId, 'recorded', course);
+        }
+
+        function exitCourseClassroom() {
+            document.getElementById('course-classroom-view').classList.add('hidden');
+            document.getElementById('mycourse-list-view').classList.remove('hidden');
+        }
+
+        // -------------------- LIVE CLASS ROOM (PUBLIC & COURSE-SPECIFIC) --------------------
+        function joinLiveSession(liveId) {
+            const live = appState.liveSessions.find(l => l.id === liveId);
+            if (!live) return;
+
+            const iframe = document.getElementById('live-room-iframe');
+            const localVid = document.getElementById('live-room-local-video');
+
+            document.getElementById('live-room-scope-badge').innerText = live.scope === 'public'
+                ? 'PUBLIC LIVE CLASS • সবার জন্য উন্মুক্ত'
+                : 'COURSE LIVE CLASS • শুধুমাত্র কোর্স শিক্ষার্থীদের জন্য';
+            document.getElementById('live-room-title').innerText = live.title;
+
+            if (live.hasLocalVideo && cachedLiveVideoURLs[live.id]) {
+                iframe.classList.add('hidden');
+                iframe.src = '';
+                localVid.classList.remove('hidden');
+                localVid.src = cachedLiveVideoURLs[live.id];
+            } else {
+                localVid.classList.add('hidden');
+                localVid.src = '';
+                iframe.classList.remove('hidden');
+                iframe.src = live.embedUrl || 'https://www.youtube.com/embed/jfKfPfyJRdk';
+            }
+
+            document.getElementById('modal-live-class').classList.remove('hidden');
+        }
+
+        function closeLiveClassRoom() {
+            document.getElementById('live-room-iframe').src = '';
+            const localVid = document.getElementById('live-room-local-video');
+            localVid.pause();
+            localVid.src = '';
+            document.getElementById('modal-live-class').classList.add('hidden');
+        }
+
+        function sendLiveClassQuestion(e) {
+            e.preventDefault();
+            const input = document.getElementById('live-qa-input');
+            const msg = input.value.trim();
+            if (!msg) return;
+            const chatBox = document.getElementById('live-qa-messages');
+            const line = document.createElement('div');
+            line.innerHTML = `<strong class="text-emerald-600 dark:text-emerald-400">${appState.currentStudent.name}:</strong> ${msg}`;
+            chatBox.appendChild(line);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            input.value = '';
+        }
+
+        // -------------------- 4. PDF & INSTANT PAYMENT GATEWAY --------------------
+        function renderPdfTab() {
+            document.getElementById('all-pdfs-list').innerHTML = appState.pdfs.map(p => buildPdfCardHTML(p)).join('');
+        }
+
+        function previewPdfDocument(pdfId) {
+            const pdf = appState.pdfs.find(p => p.id === pdfId);
+            if (!pdf) return;
+            const isUnlocked = pdf.isFree || appState.currentStudent.purchasedPdfIds.includes(pdf.id);
+            showToast(isUnlocked ? `প্রিভিউ: ${pdf.fileName} (ডাউনলোডের জন্য উন্মুক্ত)` : `এই PDF-টি পেইড (${pdf.price}৳)। Download বাটনে চেপে পেমেন্ট করুন।`);
+        }
+
+        function handlePdfDownloadAction(pdfId) {
+            const pdf = appState.pdfs.find(p => p.id === pdfId);
+            if (!pdf) return;
+            const isUnlocked = pdf.isFree || appState.currentStudent.purchasedPdfIds.includes(pdf.id);
+
+            if (isUnlocked) {
+                downloadPdfToDevice(pdf);
+                pushAutoNotification(`আপনি "${pdf.subject}" বিষয়ের পিডিএফ ডাউনলোড করেছেন।`);
+            } else {
+                openPaymentGateway('pdf', pdf.id, pdf.subject, pdf.price);
+            }
+        }
+
+        function downloadPdfToDevice(pdf) {
+            const content = `আমার একাডেমি - অফিসিয়াল PDF লেকচার নোট\n==========================================\nবিষয়: ${pdf.subject}\nফাইল: ${pdf.fileName}\nশিক্ষার্থী: ${appState.currentStudent.name}\n\nসফলভাবে ডাউনলোড সম্পন্ন হয়েছে।`;
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = pdf.fileName.replace('.pdf', '.txt');
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast(`📥 "${pdf.fileName}" ফোনে ডাউনলোড হয়েছে!`);
+        }
+
+        function openPaymentGateway(type, id, title, price) {
+            currentPaymentIntent = { type, id, title, price };
+            document.getElementById('pg-item-title').innerText = title;
+            document.getElementById('pg-item-price').innerText = price;
+            document.getElementById('pg-sender-number').value = '';
+            document.getElementById('pg-sender-pin').value = '';
+            selectPaymentMethod('bkash');
+            document.getElementById('modal-payment-gateway').classList.remove('hidden');
+        }
+
+        function closePaymentGateway() {
+            document.getElementById('modal-payment-gateway').classList.add('hidden');
+            currentPaymentIntent = null;
+        }
+
+        function selectPaymentMethod(method) {
+            selectedPaymentProvider = method;
+            const config = {
+                bkash: { name: 'bKash (বিকাশ)', color: '#E2136E', label: 'আপনার বিকাশ নম্বর দিন', receiver: appState.paymentNumbers.bkash },
+                nagad: { name: 'Nagad (নগদ)', color: '#F6921E', label: 'আপনার নগদ নম্বর দিন', receiver: appState.paymentNumbers.nagad },
+                rocket: { name: 'Rocket (রকেট)', color: '#8C3494', label: 'আপনার রকেট নম্বর দিন', receiver: appState.paymentNumbers.rocket }
+            };
+
+            ['bkash', 'nagad', 'rocket'].forEach(m => {
+                const btn = document.getElementById(`pg-btn-${m}`);
+                if (m === method) {
+                    btn.style.borderColor = config[m].color;
+                    btn.style.backgroundColor = config[m].color + '15';
+                    btn.classList.add('border-2');
+                } else {
+                    btn.style.borderColor = '';
+                    btn.style.backgroundColor = '';
+                    btn.classList.remove('border-2');
+                }
+            });
+
+            document.getElementById('pg-provider-name').innerText = config[method].name;
+            document.getElementById('pg-admin-receiver-number').innerText = config[method].receiver;
+            document.getElementById('pg-sender-label').innerText = config[method].label;
+            document.getElementById('pg-submit-btn').style.backgroundColor = config[method].color;
+        }
+
+        function confirmInstantPayment(e) {
+            e.preventDefault();
+            if (!currentPaymentIntent) return;
+            const { type, id, title } = currentPaymentIntent;
+
+            if (type === 'pdf') {
+                if (!appState.currentStudent.purchasedPdfIds.includes(id)) {
+                    appState.currentStudent.purchasedPdfIds.push(id);
+                }
+                pushAutoNotification(`আপনি "${title}" বিষয়ের পিডিএফ ক্রয় করেছেন।`);
+                persistState();
+                closePaymentGateway();
+                const pdf = appState.pdfs.find(p => p.id === id);
+                if (pdf) downloadPdfToDevice(pdf);
+                if (activeStudentTab === 'pdf') renderPdfTab();
+                if (activeStudentTab === 'home') renderHomeFeed();
+            } else if (type === 'course') {
+                const course = appState.courses.find(c => c.id === id);
+                if (course) {
+                    const existing = appState.currentStudent.enrolledCourses.find(ec => ec.courseId === id);
+                    if (existing) existing.daysLeft = course.validityDays;
+                    else appState.currentStudent.enrolledCourses.push({ courseId: id, daysLeft: course.validityDays });
+                }
+                pushAutoNotification(`আপনি "${title}" কোর্সটি ক্রয় করেছেন।`);
+                persistState();
+                closePaymentGateway();
+                showToast('পেমেন্ট সফল! কোর্সটি আপনার My Course-এ আনলক হয়েছে।');
+                if (activeStudentTab === 'mycourse') renderMyCourseTab();
+                if (activeStudentTab === 'home') renderHomeFeed();
+            }
+        }
+
+        // -------------------- 5. NOTIFICATIONS --------------------
+        function pushAutoNotification(message) {
+            appState.notifications.unshift({
+                id: 'ntf-' + Date.now(),
+                targetType: 'individual',
+                targetId: appState.currentStudent.id,
+                title: 'অটোমেটিক অ্যালার্ট',
+                message,
+                date: 'আজ',
+                time: new Date().toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' }),
+                unread: true
+            });
+            persistState();
+            updateNotificationCounter();
+        }
+
+        function getStudentRelevantNotifications() {
+            const stu = appState.currentStudent;
+            if (!stu) return [];
+            const enrolledIds = stu.enrolledCourses.map(e => e.courseId);
+            return appState.notifications.filter(n => {
+                if (n.targetType === 'course') return enrolledIds.includes(n.targetId);
+                if (n.targetType === 'individual') return n.targetId === stu.id || n.targetId === stu.contact;
+                return false;
+            });
+        }
+
+        function renderNotificationsTab() {
+            const container = document.getElementById('student-notifications-list');
+            const list = getStudentRelevantNotifications();
+            container.innerHTML = list.length === 0
+                ? `<div class="bg-slate-100 dark:bg-slate-800 p-6 rounded-2xl text-center text-xs text-slate-500">আপনার জন্য কোনো নতুন নোটিফিকেশন নেই।</div>`
+                : list.map(n => `
+                    <div class="bg-white dark:bg-slate-800/90 border ${n.unread ? 'border-indigo-500' : 'border-slate-200 dark:border-slate-700'} rounded-2xl p-4 shadow-sm space-y-1">
+                        <span class="text-[11px] font-bold bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 px-2.5 py-0.5 rounded-full">${n.title}</span>
+                        <p class="text-sm font-semibold pt-1">${n.message}</p>
+                        <p class="text-[11px] text-slate-500">${n.date} • ${n.time}</p>
+                    </div>
+                `).join('');
+        }
+
+        function updateNotificationCounter() {
+            const unread = getStudentRelevantNotifications().filter(n => n.unread).length;
+            const badge = document.getElementById('header-notif-badge');
+            badge.innerText = unread;
+            badge.classList.toggle('hidden', unread === 0);
+        }
+
+        function markAllNotificationsAsRead() {
+            appState.notifications.forEach(n => n.unread = false);
+            persistState();
+            updateNotificationCounter();
+            renderNotificationsTab();
+        }
+
+        // -------------------- 6. THREE-LINE MENU --------------------
+        function syncStudentProfileUI() {
+            const stu = appState.currentStudent;
+            if (!stu) return;
+            document.getElementById('menu-card-avatar').src = stu.avatar;
+            document.getElementById('menu-card-name').innerText = stu.name;
+            document.getElementById('menu-card-contact').innerText = stu.contact;
+            document.getElementById('menu-downloaded-count').innerText = stu.downloadedVideoIds.length;
+
+            document.getElementById('acc-detail-avatar').src = stu.avatar;
+            document.getElementById('acc-detail-name').innerText = stu.name;
+            document.getElementById('acc-detail-contact').innerText = stu.contact;
+            document.getElementById('acc-detail-dob').innerText = stu.dob || '-';
+            document.getElementById('acc-detail-district').innerText = stu.district || '-';
+            document.getElementById('acc-detail-upazila').innerText = stu.upazila || '-';
+            document.getElementById('acc-detail-school').innerText = stu.school || '-';
+        }
+
+        function openMenuSubView(sub) {
+            document.getElementById('menu-overview-cards').classList.add('hidden');
+            ['account', 'downloaded', 'settings'].forEach(s => {
+                document.getElementById(`menu-sub-${s}`).classList.toggle('hidden', s !== sub);
+            });
+            if (sub === 'account') {
+                const box = document.getElementById('acc-enrolled-courses-list');
+                const enrolled = appState.currentStudent.enrolledCourses;
+                box.innerHTML = enrolled.length === 0
+                    ? `<p class="text-xs text-slate-500">আপনি এখনো কোনো কোর্সে যুক্ত হননি।</p>`
+                    : enrolled.map(ec => {
+                        const c = appState.courses.find(crs => crs.id === ec.courseId);
+                        return `<div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 flex justify-between text-xs"><span class="font-bold">${c ? c.title : 'কোর্স'}</span><span class="font-bold text-emerald-600">${ec.daysLeft} দিন বাকি</span></div>`;
+                    }).join('');
+            }
+            if (sub === 'downloaded') {
+                const box = document.getElementById('downloaded-videos-container');
+                const dlVids = appState.videos.filter(v => appState.currentStudent.downloadedVideoIds.includes(v.id));
+                box.innerHTML = dlVids.length === 0
+                    ? `<div class="bg-slate-100 dark:bg-slate-800 p-6 rounded-2xl text-center text-xs text-slate-500">কোনো ভিডিও ডাউনলোড করা নেই।</div>`
+                    : dlVids.map(v => `
+                        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-3.5 rounded-2xl flex items-center justify-between gap-3">
+                            <div onclick="openVideoPlayerModal('${v.id}', 'free')" class="cursor-pointer min-w-0 flex-1">
+                                <h4 class="font-bold text-sm truncate">${v.title}</h4>
+                            </div>
+                            <button onclick="openVideoPlayerModal('${v.id}', 'free')" class="bg-indigo-600 text-white text-xs font-bold px-3 py-1.5 rounded-xl">দেখুন</button>
+                        </div>
+                    `).join('');
+            }
+        }
+
+        function returnToMenuOverview() {
+            ['account', 'downloaded', 'settings'].forEach(s => document.getElementById(`menu-sub-${s}`).classList.add('hidden'));
+            document.getElementById('menu-overview-cards').classList.remove('hidden');
+            syncStudentProfileUI();
+        }
+
+        function toggleAppDarkMode() {
+            appState.darkMode = !appState.darkMode;
+            document.documentElement.classList.toggle('dark', appState.darkMode);
+            persistState();
+        }
+
+        function handlePasswordUpdate(e) {
+            e.preventDefault();
+            e.target.reset();
+            showToast('পাসওয়ার্ড সফলভাবে পরিবর্তন হয়েছে!');
+        }
+
+        // -------------------- 7. SEARCH OVERLAY --------------------
+        function openSearchOverlay() {
+            document.getElementById('search-overlay').classList.remove('hidden');
+            document.getElementById('search-query-input').focus();
+            setSearchTab('videos');
+        }
+
+        function closeSearchOverlay() { document.getElementById('search-overlay').classList.add('hidden'); }
+        function clearSearchQuery() { document.getElementById('search-query-input').value = ''; executeSearch(); }
+
+        function setSearchTab(tab) {
+            activeSearchFilter = tab;
+            ['videos', 'pdf', 'live'].forEach(t => {
+                document.getElementById(`search-tab-${t}`).className = t === tab
+                    ? 'py-2 rounded-full font-bold text-xs sm:text-sm bg-indigo-600 text-white shadow transition'
+                    : 'py-2 rounded-full font-bold text-xs sm:text-sm bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition';
+            });
+            executeSearch();
+        }
+
+        function executeSearch() {
+            const q = document.getElementById('search-query-input').value.trim().toLowerCase();
+            document.getElementById('search-clear-btn').classList.toggle('hidden', q.length === 0);
+            const list = document.getElementById('search-results-list');
+
+            if (activeSearchFilter === 'videos') {
+                const res = appState.videos.filter(v => v.title.toLowerCase().includes(q) || v.subject.toLowerCase().includes(q));
+                list.innerHTML = res.length ? res.map(v => buildVideoCardHTML(v)).join('') : `<p class="text-center text-xs text-slate-500 py-10">কোনো ভিডিও পাওয়া যায়নি।</p>`;
+            } else if (activeSearchFilter === 'pdf') {
+                const res = appState.pdfs.filter(p => p.subject.toLowerCase().includes(q));
+                list.innerHTML = res.length ? res.map(p => buildPdfCardHTML(p)).join('') : `<p class="text-center text-xs text-slate-500 py-10">কোনো PDF পাওয়া যায়নি।</p>`;
+            } else if (activeSearchFilter === 'live') {
+                const res = getRelevantLiveSessionsForStudent().filter(l => l.title.toLowerCase().includes(q));
+                list.innerHTML = res.length
+                    ? res.map(l => `
+                        <div onclick="closeSearchOverlay(); joinLiveSession('${l.id}')" class="bg-rose-600 text-white p-4 rounded-2xl shadow flex items-center justify-between cursor-pointer">
+                            <div>
+                                <span class="text-[10px] font-bold bg-black/25 px-2 py-0.5 rounded">${l.scope === 'public' ? 'Public Live' : 'Course Live'}</span>
+                                <h4 class="font-bold text-sm mt-1">${l.title}</h4>
+                            </div>
+                            <span class="bg-white text-rose-700 font-bold text-xs px-3 py-1.5 rounded-xl">যুক্ত হন</span>
+                        </div>
+                    `).join('')
+                    : `<p class="text-center text-xs text-slate-500 py-10">কোনো লাইভ ক্লাস পাওয়া যায়নি।</p>`;
+            }
+        }
+
+        // -------------------- 8. ADMIN & MODERATOR PANEL LOGIC --------------------
+        function initAdminDashboard() {
+            const opSelect = document.getElementById('admin-active-operator');
+            let opts = `<option value="Main Admin (আপনি)">👑 Main Admin (আপনি)</option>`;
+            appState.moderators.forEach((m, i) => {
+                opts += `<option value="মডারেটর: ${m.name}">🛡️ মডারেটর #${i + 1}: ${m.name}</option>`;
+            });
+            opSelect.innerHTML = opts;
+            opSelect.value = activeAdminOperator;
+
+            // Storage device UI
+            updateStorageDeviceUI();
+            document.getElementById('adm-ad-title').value = appState.adBanner.title;
+            document.getElementById('adm-ad-desc').value = appState.adBanner.description;
+            document.getElementById('storage-ad-status').innerText = cachedAdMediaObjectURL ? 'ডিভাইস স্টোরেজ থেকে সংযুক্ত ✓' : 'ডিফল্ট টেক্সট ব্যানার';
+            const localLiveCount = appState.liveSessions.filter(l => l.hasLocalVideo).length;
+            document.getElementById('storage-live-status').innerText = `${localLiveCount}টি ভিডিও ফাইল`;
+
+            // Populate Course Dropdowns
+            const courseOpts = appState.courses.map(c => `<option value="${c.id}">${c.title}</option>`).join('');
+            document.getElementById('adm-live-course-id').innerHTML = courseOpts;
+            document.getElementById('adm-rec-course-select').innerHTML = courseOpts;
+            document.getElementById('adm-notif-course-select').innerHTML = courseOpts;
+            document.getElementById('hint-current-student-id').innerText = appState.currentStudent ? appState.currentStudent.contact : '01712345678';
+
+            renderAdminActiveLives();
+
+            // Payment numbers
+            document.getElementById('adm-pay-bkash').value = appState.paymentNumbers.bkash;
+            document.getElementById('adm-pay-nagad').value = appState.paymentNumbers.nagad;
+            document.getElementById('adm-pay-rocket').value = appState.paymentNumbers.rocket;
+
+            renderAdminModerators();
+        }
+
+        function changeActiveAdminOperator() {
+            activeAdminOperator = document.getElementById('admin-active-operator').value;
+            document.getElementById('top-role-badge').innerText = activeAdminOperator;
+            const isMain = activeAdminOperator.startsWith('Main Admin');
+            document.getElementById('admtab-payments').classList.toggle('hidden', !isMain);
+            document.getElementById('admtab-moderators').classList.toggle('hidden', !isMain);
+            if (!isMain) switchAdminTab('adstorage');
+        }
+
+        function switchAdminTab(tab) {
+            ['adstorage', 'livecontrol', 'courses', 'content', 'notifications', 'payments', 'moderators'].forEach(t => {
+                const sec = document.getElementById(`admsec-${t}`);
+                const btn = document.getElementById(`admtab-${t}`);
+                if (sec) sec.classList.toggle('hidden', t !== tab);
+                if (btn) {
+                    btn.className = t === tab
+                        ? 'px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm whitespace-nowrap bg-indigo-600 text-white shadow'
+                        : 'px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm whitespace-nowrap bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800';
+                }
+            });
+        }
+
+        // Ad Image/Video Upload from Device Storage
+        function previewSelectedAdMedia(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            pendingAdFileBlob = file;
+            const box = document.getElementById('adm-ad-media-preview-box');
+            const tempUrl = URL.createObjectURL(file);
+            box.classList.remove('hidden');
+            if (file.type.startsWith('video/')) {
+                box.innerHTML = `<video src="${tempUrl}" class="max-h-48 w-full object-contain" controls muted autoplay loop></video>`;
+            } else {
+                box.innerHTML = `<img src="${tempUrl}" class="max-h-48 w-full object-contain">`;
+            }
+        }
+
+        async function adminPublishMediaAd(e) {
+            e.preventDefault();
+            appState.adBanner.title = document.getElementById('adm-ad-title').value.trim();
+            appState.adBanner.description = document.getElementById('adm-ad-desc').value.trim();
+
+            if (pendingAdFileBlob) {
+                await saveBlobToDeviceStorage('home_ad_media', pendingAdFileBlob);
+                appState.adBanner.hasCustomMedia = true;
+                pendingAdFileBlob = null;
+                await hydrateStoredMediaFromDevice();
+            }
+            persistState();
+            initAdminDashboard();
+            showToast('ছবি/ভিডিও Ad সফলভাবে পাবলিশ ও আপডেট হয়েছে!');
+        }
+
+        async function adminResetAdMedia() {
+            await deleteBlobFromDeviceStorage('home_ad_media');
+            appState.adBanner.hasCustomMedia = false;
+            pendingAdFileBlob = null;
+            document.getElementById('adm-ad-media-preview-box').classList.add('hidden');
+            await hydrateStoredMediaFromDevice();
+            persistState();
+            initAdminDashboard();
+            showToast('Ad মিডিয়া ফাইল মুছে ফেলা হয়েছে।');
+        }
+
+        function switchStorageDevice(device) {
+            appState.storageDevice = device;
+            persistState();
+            updateStorageDeviceUI();
+            showToast(device === 'mobile' ? 'মোবাইল স্টোরেজ সক্রিয় করা হয়েছে' : 'ল্যাপটপ / PC স্টোরেজ সক্রিয় করা হয়েছে');
+        }
+
+        function updateStorageDeviceUI() {
+            const isMobile = appState.storageDevice === 'mobile';
+            document.getElementById('active-storage-badge').innerHTML = isMobile
+                ? `<i class="fa-solid fa-mobile-screen mr-1"></i>মোবাইল স্টোরেজ সক্রিয়`
+                : `<i class="fa-solid fa-laptop mr-1"></i>ল্যাপটপ / PC স্টোরেজ সক্রিয়`;
+
+            document.getElementById('btn-storage-mobile').className = isMobile
+                ? 'p-3.5 rounded-2xl border-2 border-emerald-500 bg-emerald-50 dark:bg-emerald-950/30 text-left transition'
+                : 'p-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-left transition';
+            document.getElementById('btn-storage-laptop').className = !isMobile
+                ? 'p-3.5 rounded-2xl border-2 border-indigo-500 bg-indigo-50 dark:bg-indigo-950/30 text-left transition'
+                : 'p-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-left transition';
+        }
+
+        // Two-Mode Live Class Controller
+        function toggleAdminLiveCourseSelect() {
+            const scope = document.getElementById('adm-live-scope').value;
+            document.getElementById('adm-live-course-wrap').classList.toggle('hidden', scope !== 'course');
+        }
+
+        async function adminStartLiveClass(e) {
+            e.preventDefault();
+            const scope = document.getElementById('adm-live-scope').value;
+            const courseId = scope === 'course' ? document.getElementById('adm-live-course-id').value : null;
+            const title = document.getElementById('adm-live-title').value.trim();
+            const embedUrl = document.getElementById('adm-live-url').value.trim();
+            const fileInput = document.getElementById('adm-live-local-file');
+            const localFile = fileInput.files[0];
+
+            const liveId = 'live-' + Date.now();
+            let hasLocalVideo = false;
+            if (localFile) {
+                await saveBlobToDeviceStorage(`live_video_${liveId}`, localFile);
+                hasLocalVideo = true;
+            }
+
+            appState.liveSessions.unshift({
+                id: liveId,
+                scope,
+                courseId,
+                title,
+                embedUrl,
+                hasLocalVideo
+            });
+
+            await hydrateStoredMediaFromDevice();
+            persistState();
+            e.target.reset();
+            toggleAdminLiveCourseSelect();
+            initAdminDashboard();
+            showToast(scope === 'public' ? 'সবার জন্য লাইভ ক্লাস শুরু হয়েছে!' : 'নির্দিষ্ট কোর্সের জন্য লাইভ ক্লাস শুরু হয়েছে!');
+        }
+
+        function renderAdminActiveLives() {
+            const box = document.getElementById('adm-active-lives-list');
+            if (appState.liveSessions.length === 0) {
+                box.innerHTML = `<p class="text-xs text-slate-400">বর্তমানে কোনো লাইভ চলছে না।</p>`;
+                return;
+            }
+            box.innerHTML = appState.liveSessions.map(l => {
+                const crs = l.scope === 'course' ? appState.courses.find(c => c.id === l.courseId) : null;
+                return `
+                    <div class="p-3.5 rounded-2xl border border-rose-200 dark:border-rose-900/50 bg-rose-50/50 dark:bg-rose-950/20 flex items-center justify-between gap-2 text-xs">
+                        <div>
+                            <span class="font-bold text-rose-600">${l.scope === 'public' ? '🌐 সবার জন্য লাইভ' : '🔒 ' + (crs ? crs.title : 'কোর্স লাইভ')}</span>
+                            <p class="font-bold text-sm mt-0.5">${l.title}</p>
+                        </div>
+                        <button onclick="adminStopLiveSession('${l.id}')" class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-3 py-1.5 rounded-xl shrink-0">
+                            লাইভ বন্ধ করুন
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function adminStopLiveSession(liveId) {
+            await deleteBlobFromDeviceStorage(`live_video_${liveId}`);
+            appState.liveSessions = appState.liveSessions.filter(l => l.id !== liveId);
+            persistState();
+            initAdminDashboard();
+            showToast('লাইভ ক্লাস বন্ধ করা হয়েছে।');
+        }
+
+        // Course & Protected Recorded Class Upload
+        function adminCreateNewCourse(e) {
+            e.preventDefault();
+            const title = document.getElementById('adm-crs-title').value.trim();
+            const price = parseInt(document.getElementById('adm-crs-price').value) || 1000;
+            const validityDays = parseInt(document.getElementById('adm-crs-days').value) || 60;
+
+            appState.courses.push({
+                id: 'crs-' + Date.now(),
+                title,
+                price,
+                validityDays,
+                recordedClasses: []
+            });
+            persistState();
+            e.target.reset();
+            initAdminDashboard();
+            showToast('নতুন পেইড কোর্স তৈরি হয়েছে!');
+        }
+
+        function adminAddCourseRecordedClass(e) {
+            e.preventDefault();
+            const courseId = document.getElementById('adm-rec-course-select').value;
+            const title = document.getElementById('adm-rec-title').value.trim();
+            const url = document.getElementById('adm-rec-url').value.trim();
+
+            const course = appState.courses.find(c => c.id === courseId);
+            if (!course) return;
+            if (!course.recordedClasses) course.recordedClasses = [];
+            course.recordedClasses.push({
+                id: 'rec-' + Date.now(),
+                title,
+                url
+            });
+            persistState();
+            e.target.reset();
+            document.getElementById('adm-rec-url').value = 'https://www.youtube.com/embed/rfscVS0vtbw';
+            showToast('কোর্সের সুরক্ষিত রেকর্ডেড ক্লাস যুক্ত হয়েছে!');
+        }
+
+        // Free Video & PDF
+        function toggleAdminPdfPriceInput() {
+            const type = document.getElementById('adm-pdf-type').value;
+            const wrap = document.getElementById('adm-pdf-price-wrap');
+            wrap.classList.toggle('opacity-40', type !== 'paid');
+            wrap.classList.toggle('pointer-events-none', type !== 'paid');
+        }
+
+        function adminAddFreeVideo(e) {
+            e.preventDefault();
+            const title = document.getElementById('adm-vid-title').value.trim();
+            const subject = document.getElementById('adm-vid-subject').value.trim();
+            const url = document.getElementById('adm-vid-url').value.trim();
+            appState.videos.unshift({ id: 'vid-' + Date.now(), title, subject, url, likes: 0, liked: false, comments: [] });
+            persistState();
+            e.target.reset();
+            document.getElementById('adm-vid-url').value = 'https://www.youtube.com/embed/rfscVS0vtbw';
+            showToast('নতুন ফ্রি ভিডিও পাবলিশ হয়েছে!');
+        }
+
+        function adminAddPdf(e) {
+            e.preventDefault();
+            const subject = document.getElementById('adm-pdf-subject').value.trim();
+            const isFree = document.getElementById('adm-pdf-type').value === 'free';
+            const price = isFree ? 0 : (parseInt(document.getElementById('adm-pdf-price').value) || 100);
+            const fileName = document.getElementById('adm-pdf-filename').value.trim();
+            appState.pdfs.unshift({ id: 'pdf-' + Date.now(), subject, isFree, price, fileName });
+            persistState();
+            e.target.reset();
+            toggleAdminPdfPriceInput();
+            showToast('PDF সফলভাবে আপলোড হয়েছে!');
+        }
+
+        // Targeted Notifications
+        function setAdminNotifTargetType(type) {
+            adminNotifTargetType = type;
+            document.getElementById('notif-target-btn-course').className = type === 'course'
+                ? 'py-2 rounded-lg text-xs font-bold bg-indigo-600 text-white shadow transition'
+                : 'py-2 rounded-lg text-xs font-bold text-slate-600 dark:text-slate-300 transition';
+            document.getElementById('notif-target-btn-individual').className = type === 'individual'
+                ? 'py-2 rounded-lg text-xs font-bold bg-indigo-600 text-white shadow transition'
+                : 'py-2 rounded-lg text-xs font-bold text-slate-600 dark:text-slate-300 transition';
+            document.getElementById('adm-notif-course-box').classList.toggle('hidden', type !== 'course');
+            document.getElementById('adm-notif-individual-box').classList.toggle('hidden', type !== 'individual');
+        }
+
+        function adminSendTargetedNotification(e) {
+            e.preventDefault();
+            const date = document.getElementById('adm-notif-date').value.trim();
+            const time = document.getElementById('adm-notif-time').value.trim();
+            const message = document.getElementById('adm-notif-message').value.trim();
+
+            if (adminNotifTargetType === 'course') {
+                const courseId = document.getElementById('adm-notif-course-select').value;
+                const course = appState.courses.find(c => c.id === courseId);
+                appState.notifications.unshift({
+                    id: 'ntf-' + Date.now(),
+                    targetType: 'course',
+                    targetId: courseId,
+                    title: course ? course.title : 'কোর্স নোটিফিকেশন',
+                    message,
+                    date,
+                    time,
+                    unread: true
+                });
+            } else {
+                const studentId = document.getElementById('adm-notif-student-id').value.trim();
+                appState.notifications.unshift({
+                    id: 'ntf-' + Date.now(),
+                    targetType: 'individual',
+                    targetId: studentId,
+                    title: 'ব্যক্তিগত নোটিফিকেশন (অ্যাডমিন)',
+                    message,
+                    date,
+                    time,
+                    unread: true
+                });
+            }
+            persistState();
+            updateNotificationCounter();
+            e.target.reset();
+            showToast('নোটিফিকেশন পাঠানো হয়েছে!');
+        }
+
+        // Payment Numbers & Moderators
+        function adminSavePaymentNumbers(e) {
+            e.preventDefault();
+            appState.paymentNumbers = {
+                bkash: document.getElementById('adm-pay-bkash').value.trim(),
+                nagad: document.getElementById('adm-pay-nagad').value.trim(),
+                rocket: document.getElementById('adm-pay-rocket').value.trim()
+            };
+            persistState();
+            showToast('বিকাশ, নগদ ও রকেট নম্বর আপডেট হয়েছে!');
+        }
+
+        function renderAdminModerators() {
+            const grid = document.getElementById('adm-moderators-grid');
+            const badge = document.getElementById('adm-mod-count-pill');
+            const btn = document.getElementById('adm-mod-submit-btn');
+
+            badge.innerText = `${appState.moderators.length} / ৪ জন যুক্ত`;
+            btn.disabled = appState.moderators.length >= 4;
+            btn.classList.toggle('opacity-50', appState.moderators.length >= 4);
+
+            grid.innerHTML = appState.moderators.map((m, i) => `
+                <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 flex items-center justify-between gap-2">
+                    <div class="min-w-0">
+                        <span class="text-[10px] font-bold bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded">মডারেটর #${i + 1}</span>
+                        <h4 class="font-bold text-sm mt-1 truncate">${m.name}</h4>
+                        <p class="text-xs text-slate-500 truncate">${m.contact}</p>
+                    </div>
+                    <div class="flex gap-1.5 shrink-0">
+                        <button onclick="replaceModeratorSlot('${m.id}')" class="bg-amber-400 hover:bg-amber-500 text-slate-950 text-xs font-bold px-2.5 py-1.5 rounded-xl">পরিবর্তন</button>
+                        <button onclick="removeModeratorSlot('${m.id}')" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-2.5 py-1.5 rounded-xl"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function adminAddOrUpdateModerator(e) {
+            e.preventDefault();
+            if (appState.moderators.length >= 4) return;
+            const name = document.getElementById('adm-mod-name').value.trim();
+            const contact = document.getElementById('adm-mod-contact').value.trim();
+            appState.moderators.push({ id: 'mod-' + Date.now(), name, contact });
+            persistState();
+            e.target.reset();
+            initAdminDashboard();
+            showToast(`মডারেটর "${name}" যুক্ত হয়েছেন!`);
+        }
+
+        function removeModeratorSlot(id) {
+            appState.moderators = appState.moderators.filter(m => m.id !== id);
+            persistState();
+            initAdminDashboard();
+        }
+
+        function replaceModeratorSlot(id) {
+            const mod = appState.moderators.find(m => m.id === id);
+            if (!mod) return;
+            document.getElementById('adm-mod-name').value = mod.name;
+            document.getElementById('adm-mod-contact').value = mod.contact;
+            removeModeratorSlot(id);
+            document.getElementById('adm-mod-name').focus();
+        }
+    </script>
+</body>
+</html>
